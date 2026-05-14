@@ -9,7 +9,8 @@
     </div>
 
     <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 mb-16" x-data="{ copied: false }">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden dark:bg-slate-800 dark:border-slate-700">
             @if ($post->featured_image)
                 <div class="relative overflow-hidden">
                     <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
@@ -31,7 +32,8 @@
                 </div>
 
                 {{-- Title --}}
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-6 leading-tight">{{ $post->title }}
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-6 leading-tight dark:text-white">
+                    {{ $post->title }}
                 </h1>
 
                 {{-- Author --}}
@@ -42,25 +44,26 @@
                             {{ strtoupper(substr($post->author->name, 0, 1)) }}
                         </div>
                         <div>
-                            <p class="font-semibold text-slate-900">{{ $post->author->name }}</p>
-                            <p class="text-xs text-slate-500">Penulis</p>
+                            <p class="font-semibold text-slate-900 dark:text-white">{{ $post->author->name }}</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Penulis</p>
                         </div>
                     </div>
                 @endif
 
                 {{-- Content --}}
-                <div class="max-w-2xl mx-auto">
+                <div class="max-w-2xl mx-auto dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                     @php
                         $hasHtml = $post->content_body !== strip_tags($post->content_body);
                     @endphp
 
                     @if ($hasHtml)
                         <div
-                            class="prose prose-lg max-w-none prose-slate prose-headings:font-display prose-headings:font-black prose-headings:tracking-tight prose-a:text-primary-600 prose-img:rounded-3xl prose-blockquote:border-primary-500 prose-blockquote:bg-primary-50 prose-blockquote:py-1 prose-blockquote:px-6">
+                            class="prose prose-lg max-w-none prose-slate prose-headings:font-display prose-headings:font-black prose-headings:tracking-tight prose-a:text-primary-600 prose-img:rounded-3xl prose-blockquote:border-primary-500 prose-blockquote:bg-primary-50 prose-blockquote:py-1 prose-blockquote:px-6 dark:text-white">
                             {!! $post->content_body !!}
                         </div>
                     @else
-                        <div class="text-slate-600 leading-relaxed space-y-4" style="white-space: pre-wrap;">
+                        <div class="text-slate-600 leading-relaxed space-y-4 dark:text-white"
+                            style="white-space: pre-wrap;">
                             {{ $post->content_body }}
                         </div>
                     @endif
@@ -70,7 +73,7 @@
                 <div class="mt-10 pt-6 border-t border-slate-200">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <p class="text-sm font-medium text-slate-700 mb-2">Bagikan artikel ini:</p>
+                            <p class="text-sm font-medium text-slate-700 mb-2 dark:text-white">Bagikan artikel ini:</p>
                         </div>
                         <div class="flex items-center gap-2">
                             {{-- WhatsApp --}}
@@ -98,7 +101,7 @@
                             {{-- Facebook --}}
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('posts.show', $post)) }}"
                                 target="_blank" rel="noopener noreferrer"
-                                class="w-10 h-10 bg-green-50 hover:bg-green-600 rounded-xl flex items-center justify-center text-green-600 hover:text-white transition-all duration-300 group"
+                                class="w-10 h-10 bg-blue-500 hover:bg-blue-700 rounded-xl flex items-center justify-center hover:text-white transition-all duration-300 group"
                                 aria-label="Bagikan Facebook">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -109,7 +112,7 @@
                             {{-- LinkedIn --}}
                             <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(route('posts.show', $post)) }}&title={{ urlencode($post->title) }}"
                                 target="_blank" rel="noopener noreferrer"
-                                class="w-10 h-10 bg-green-50 hover:bg-green-700 rounded-xl flex items-center justify-center text-green-700 hover:text-white transition-all duration-300 group"
+                                class="w-10 h-10 bg-blue-500 hover:bg-blue-700 rounded-xl flex items-center justify-center  hover:text-white transition-all duration-300 group"
                                 aria-label="Bagikan LinkedIn">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -149,11 +152,11 @@
         {{-- Related Posts --}}
         @if ($relatedPosts->isNotEmpty())
             <div class="mt-16">
-                <h2 class="text-xl font-bold text-slate-900 mb-6">Artikel Terkait</h2>
+                <h2 class="text-xl font-bold text-slate-900 mb-6 dark:text-white">Artikel Terkait</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach ($relatedPosts as $related)
                         <article
-                            class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            class="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 dark:bg-slate-800 dark:border-slate-700 ">
                             @if ($related->featured_image)
                                 <div class="relative overflow-hidden">
                                     <img src="{{ Storage::url($related->featured_image) }}" alt="{{ $related->title }}"
@@ -161,11 +164,12 @@
                                 </div>
                             @endif
                             <div class="p-4">
-                                <h3 class="font-bold text-slate-900">
+                                <h3 class="font-bold text-slate-900 dark:text-white">
                                     <a href="{{ route('posts.show', $related) }}"
                                         class="hover:text-green-600 transition-colors">{{ $related->title }}</a>
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-2">{{ $related->published_at?->format('d M Y') }}</p>
+                                <p class="text-xs text-slate-500 mt-2 dark:text-slate-400">
+                                    {{ $related->published_at?->format('d M Y') }}</p>
                             </div>
                         </article>
                     @endforeach

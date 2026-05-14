@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\AdvertisingPoint;
 use App\Models\Inquiry;
 use App\Models\Post;
@@ -46,11 +47,17 @@ class DashboardController extends Controller
             ->pluck('count', 'month')
             ->toArray();
 
+        $recentActivities = ActivityLog::with('user')
+            ->latest()
+            ->limit(10)
+            ->get();
+
         return view('admin.dashboard.index', compact(
             'stats',
             'recentInquiries',
             'popularPoints',
-            'monthlyInquiries'
+            'monthlyInquiries',
+            'recentActivities'
         ));
     }
 }

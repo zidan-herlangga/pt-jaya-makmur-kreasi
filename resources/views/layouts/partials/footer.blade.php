@@ -1,4 +1,4 @@
-<footer class="bg-slate-900 text-slate-400 relative">
+<footer class="bg-slate-900 text-slate-400 dark:bg-slate-950 relative">
     {{-- Decorative top border --}}
     <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-green-400 to-green-500"></div>
 
@@ -11,8 +11,7 @@
                     <p class="text-slate-400 text-sm mt-1">Berita terbaru seputar dunia reklame dan penawaran spesial.
                     </p>
                 </div>
-                <form class="flex w-full lg:w-auto gap-3"
-                    x-data="{ email: '', loading: false, message: '', error: '' }"
+                <form class="flex w-full lg:w-auto gap-3" x-data="{ email: '', loading: false, message: '', error: '' }"
                     @submit.prevent="
                         loading = true; error = ''; message = '';
                         fetch('{{ route('newsletter.subscribe') }}', {
@@ -29,13 +28,13 @@
                             class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm placeholder-slate-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">
                         <p x-show="message" x-text="message"
                             class="absolute -bottom-6 left-0 text-xs text-green-400 whitespace-nowrap"></p>
-                        <p x-show="error" x-text="error"
-                            class="absolute -bottom-6 left-0 text-xs text-red-400"></p>
+                        <p x-show="error" x-text="error" class="absolute -bottom-6 left-0 text-xs text-red-400"></p>
                     </div>
                     <button type="submit" :disabled="loading"
                         class="px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white rounded-xl text-sm font-semibold transition-all whitespace-nowrap shadow-lg shadow-green-500/20">
                         <span x-show="!loading">Berlangganan</span>
-                        <span x-show="loading" class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                        <span x-show="loading"
+                            class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                     </button>
                 </form>
             </div>
@@ -155,7 +154,7 @@
                         </svg>
                         <div>
                             <p class="text-sm text-slate-400">{{ setting('address', 'Jl. Sudirman No. 123') }}</p>
-                            <p class="text-sm text-slate-400">{{ setting('address2', 'Jakarta Pusat, Indonesia') }}</p>
+                            {{-- <p class="text-sm text-slate-400">{{ setting('address2', 'Jakarta Pusat, Indonesia') }}</p> --}}
                         </div>
                     </li>
                     <li class="flex items-center gap-3">

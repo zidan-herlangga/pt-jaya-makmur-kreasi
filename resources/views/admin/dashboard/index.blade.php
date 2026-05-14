@@ -14,6 +14,32 @@
         </div>
     </div>
 
+    {{-- Welcome Card with Last Login --}}
+    <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl shadow-lg shadow-green-500/20 p-6 text-white">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="text-lg font-semibold">Selamat datang, {{ auth()->user()->name }}!</h2>
+                @if(auth()->user()->last_login_at)
+                    <p class="text-green-100 text-sm mt-1">
+                        Terakhir login
+                        <span class="font-medium text-white">{{ auth()->user()->last_login_at->diffForHumans() }}</span>
+                        @if(auth()->user()->last_login_ip)
+                            dari IP <span class="font-medium text-white">{{ auth()->user()->last_login_ip }}</span>
+                        @endif
+                    </p>
+                @else
+                    <p class="text-green-100 text-sm mt-1">Ini adalah pertama kalinya Anda login.</p>
+                @endif
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center">
+                    <p class="text-2xl font-bold">{{ $stats['pending_inquiries'] }}</p>
+                    <p class="text-xs text-green-100">Inquiry Baru</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Stats Grid --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
@@ -148,6 +174,60 @@
                     </div>
                 @endforelse
             </div>
+        </div>
+    </div>
+
+    {{-- Activity Log --}}
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <h2 class="font-semibold text-slate-900">Aktivitas Terbaru</h2>
+            </div>
+        </div>
+        <div class="divide-y divide-slate-100">
+            @forelse($recentActivities as $log)
+                <div class="px-6 py-3.5 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                        @if($log->action === 'login')
+                            <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                        @elseif($log->action === 'logout')
+                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                        @elseif($log->action === 'created')
+                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        @elseif($log->action === 'updated')
+                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        @elseif($log->action === 'deleted')
+                            <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        @else
+                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-slate-900">
+                            <span class="font-medium">{{ $log->user?->name }}</span>
+                            {{ $log->description }}
+                        </p>
+                        <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+                            <span>{{ $log->created_at->diffForHumans() }}</span>
+                            @if($log->ip_address)
+                                <span>&middot;</span>
+                                <span>{{ $log->ip_address }}</span>
+                            @endif
+                        </p>
+                    </div>
+                    @if($log->action === 'login')
+                        <span class="text-[10px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full shrink-0">Login</span>
+                    @elseif($log->action === 'logout')
+                        <span class="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full shrink-0">Logout</span>
+                    @endif
+                </div>
+            @empty
+                <div class="px-6 py-10 text-center">
+                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <p class="text-sm text-slate-400">Belum ada aktivitas</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>

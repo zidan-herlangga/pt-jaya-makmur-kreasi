@@ -1,4 +1,4 @@
-<nav class="fixed top-0 w-full z-50 h-16 lg:h-20 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/50 shadow-lg shadow-slate-900/20"
+<nav class="fixed top-0 w-full z-50 h-16 lg:h-20 bg-slate-900/95 backdrop-blur-md border-b border-slate-800/50 shadow-lg shadow-slate-900/20 dark:bg-slate-950/95 dark:border-slate-700/50"
     x-data="{ offcanvas: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div class="flex justify-between items-center h-full">
@@ -57,7 +57,20 @@
             </div>
 
             {{-- Right Section --}}
-            <div class="hidden lg:flex items-center gap-3">
+            <div class="hidden lg:flex items-center gap-2">
+                {{-- Dark Mode Toggle --}}
+                <button @click="toggleDark()"
+                    class="p-2.5 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                    :title="darkMode ? 'Mode Terang' : 'Mode Gelap'" aria-label="Toggle dark mode">
+                    <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                    <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                </button>
                 @auth
                     <a href="{{ route('admin.dashboard') }}"
                         class="text-slate-300 hover:text-white text-sm font-medium transition-colors px-3 py-2">Dashboard</a>
@@ -82,12 +95,13 @@
     {{-- Offcanvas Overlay --}}
     <div x-show="offcanvas" x-transition:enter="transition-opacity ease-linear duration-300"
         x-transition:leave="transition-opacity ease-linear duration-300"
-        class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden" @click="offcanvas = false"></div>
+        class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm dark:bg-slate-950/80 lg:hidden"
+        @click="offcanvas = false"></div>
 
     {{-- Offcanvas Panel --}}
     <div x-show="offcanvas" x-transition:enter="transition-transform ease-out duration-300"
         x-transition:leave="transition-transform ease-in duration-200"
-        class="fixed top-0 right-0 z-50 h-screen w-72 max-w-[85vw] bg-slate-900 border-l border-slate-800 shadow-2xl lg:hidden overflow-y-auto"
+        class="fixed top-0 right-0 z-50 h-screen w-72 max-w-[85vw] bg-slate-900 border-l border-slate-800 shadow-2xl dark:bg-slate-950 dark:border-slate-700 lg:hidden overflow-y-auto"
         @click.away="offcanvas = false">
         <div class="flex flex-col min-h-full">
             {{-- Offcanvas Header --}}
@@ -97,13 +111,18 @@
                     @if ($logo)
                         <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}"
                             class="h-8 w-auto object-contain">
+                        <div class="flex flex-col leading-tight">
+                            <span
+                                class="text-white font-bold text-sm tracking-tight">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
+                            <span
+                                class="text-green-400 text-[10px] font-medium tracking-wider uppercase leading-none mt-0.5">{{ setting('site_description', 'Solusi Reklame Terpercaya') }}</span>
+                        </div>
                     @else
                         <div
                             class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-xs">JM</span>
                         </div>
-                        <span
-                            class="text-white font-bold text-base">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
+                        <span class="text-white font-bold text-sm">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
                     @endif
                 </a>
                 <button @click="offcanvas = false"
@@ -172,6 +191,23 @@
 
             {{-- Offcanvas Footer --}}
             <div class="px-4 py-5 border-t border-slate-800 space-y-3 shrink-0">
+                {{-- Dark Mode Toggle (Mobile) --}}
+                <button @click="toggleDark()"
+                    class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-white/5 text-slate-300 hover:bg-white/10 rounded-xl text-sm font-semibold transition-all">
+                    <template x-if="!darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                    </template>
+                    <template x-if="darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                        </svg>
+                    </template>
+                    <span x-text="darkMode ? 'Mode Terang' : 'Mode Gelap'"></span>
+                </button>
                 @auth
                     <a href="{{ route('admin.dashboard') }}" @click="offcanvas = false"
                         class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-500/10 text-green-400 hover:bg-green-500/20 rounded-xl text-sm font-semibold transition-all">

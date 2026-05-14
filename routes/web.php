@@ -17,7 +17,14 @@ use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PortfolioController;
 use App\Http\Controllers\Public\PostController;
+use App\Http\Controllers\Public\SitemapController;
+use App\Models\User;
+use App\Services\ActivityLoggerService;
 use Illuminate\Support\Facades\Route;
+
+// SEO Routes
+Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -62,6 +69,15 @@ Route::middleware('guest')->group(function () {
 
         if (auth()->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            $user = auth()->user();
+            $user->update([
+                'last_login_at' => now(),
+                'last_login_ip' => $request->ip(),
+            ]);
+
+            app(ActivityLoggerService::class)->login();
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -72,6 +88,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', function (\Illuminate\Http\Request $request) {
+    app(ActivityLoggerService::class)->logout();
     auth()->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();

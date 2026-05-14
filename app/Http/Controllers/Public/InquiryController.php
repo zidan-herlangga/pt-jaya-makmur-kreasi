@@ -7,15 +7,24 @@ use App\Http\Requests\Admin\StoreInquiryRequest;
 use App\Mail\InquiryNotification;
 use App\Models\AdvertisingPoint;
 use App\Models\Inquiry;
+use App\Services\SeoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class InquiryController extends Controller
 {
+    public function __construct(private SeoService $seoService) {}
+
     public function create(?AdvertisingPoint $product = null): View
     {
-        return view('public.inquiry', compact('product'));
+        $seo = $this->seoService->forPage(
+            'Hubungi Kami - PT. Jaya Makmur',
+            'Hubungi tim reklame profesional PT. Jaya Makmur untuk konsultasi kebutuhan billboard, neon box, dan media luar ruang Anda.',
+            'kontak reklame, hubungi kami, konsultasi billboard, PT Jaya Makmur'
+        )->render();
+
+        return view('public.inquiry', compact('product', 'seo'));
     }
 
     public function store(StoreInquiryRequest $request): RedirectResponse

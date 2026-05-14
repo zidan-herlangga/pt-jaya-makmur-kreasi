@@ -1,4 +1,4 @@
-@extends('layouts.app', ['seo' => ['title' => 'Hubungi Kami | ' . config('app.name'), 'description' => 'Hubungi tim reklame profesional kami untuk konsultasi kebutuhan billboard dan media luar ruang Anda.']])
+@extends('layouts.app', ['seo' => $seo])
 
 @section('content')
     <div class="page-header py-16 lg:py-20 bg-slate-900 text-white overflow-hidden">
@@ -11,7 +11,8 @@
     </div>
 
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 mb-16">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xl p-8 lg:p-10">
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-xl p-8 lg:p-10 dark:bg-slate-800 dark:border-slate-700">
             @if (session('success'))
                 <div class="mb-6 rounded-xl bg-green-50 border border-green-200 p-6 text-center">
                     <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor"
@@ -38,38 +39,40 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap <span
+                        <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Nama Lengkap <span
                                 class="text-rose-500">*</span></label>
                         <input type="text" name="sender_name" value="{{ old('sender_name') }}" required
-                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                         @error('sender_name')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Email <span
+                        <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Email <span
                                 class="text-rose-500">*</span></label>
                         <input type="email" name="sender_email" value="{{ old('sender_email') }}" required
-                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                         @error('sender_email')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Telepon</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Nomor
+                            Telepon</label>
                         <input type="text" name="sender_phone" value="{{ old('sender_phone') }}"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Perusahaan</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Nama
+                            Perusahaan</label>
                         <input type="text" name="company_name" value="{{ old('company_name') }}"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Pesan <span
+                        <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">Pesan <span
                                 class="text-rose-500">*</span></label>
                         <textarea name="message" rows="5" required
-                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all">{{ old('message') }}</textarea>
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white">{{ old('message') }}</textarea>
                         @error('message')
                             <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                         @enderror

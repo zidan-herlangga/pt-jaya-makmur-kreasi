@@ -1,66 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PT. Jaya Makmur Kreasi — Sistem Informasi Periklanan & Reklame
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem informasi manajemen periklanan dan reklame berbasis web untuk PT. Jaya Makmur Kreasi. Dibangun dengan Laravel 11, mencakup website company profile, katalog titik reklame, portofolio, berita, manajemen inquiry, dan panel admin lengkap.
 
-## About Laravel
+## Fitur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Publik
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Beranda** — Hero banner, statistik, titik reklame unggulan, portofolio, berita terbaru, testimoni, trust badges, floating WhatsApp
+- **Katalog Produk** — Grid pencarian titik reklame dengan filter kota, kategori, orientasi, jenis lampu, harga; sorting dan detail produk dengan galeri
+- **Portofolio** — Galeri proyek klien dengan filter kategori
+- **Berita** — Artikel dan blog dengan filter kategori, estimasi waktu baca
+- **Kontak** — Form inquiry dengan honeypot anti-spam, notifikasi email ke admin
+- **Newsletter** — Langganan email via AJAX
+- **SEO Lengkap** — Meta tags Open Graph, Twitter Cards, JSON-LD structured data (Organization, Product, NewsArticle, CreativeWork)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Admin Panel
 
-## Learning Laravel
+- **Dashboard** — Statistik, grafik inquiry bulanan, titik populer
+- **Titik Reklame CRUD** — Manajemen titik reklame dengan optimasi gambar (4 varian WebP), galeri, SEO fields, soft deletes
+- **Portofolio CRUD** — Proyek klien dengan galeri gambar
+- **Artikel CRUD** — TinyMCE rich text editor, excerpt otomatis, kategori
+- **Inquiry Management** — Workflow status (pending/processed/spam/archived), catatan admin
+- **Kategori** — Manajemen kategori (produk & post) dengan icon
+- **Users** — Manajemen pengguna dengan role (super-admin, admin, editor)
+- **Settings** — Pengaturan dinamis (umum, SEO, sosial media, kontak, tampilan)
+- **Newsletter** — Daftar subscriber, export CSV
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Tech Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+| Lapisan       | Teknologi                                |
+| ------------- | ---------------------------------------- |
+| **Framework** | Laravel 11                               |
+| **PHP**       | ^8.2                                     |
+| **Database**  | MySQL                                    |
+| **CSS**       | Tailwind CSS 3 + @tailwindcss/typography |
+| **JS**        | Alpine.js 3, TinyMCE 8                   |
+| **Build**     | Vite 5                                   |
+| **Auth**      | Laravel Auth (session-based)             |
+| **RBAC**      | Spatie Laravel Permission                |
+| **Image**     | Intervention Image 3                     |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Persyaratan
 
-## Laravel Sponsors
+- PHP ^8.2
+- Composer
+- Node.js & NPM
+- MySQL 5+
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalasi
 
-### Premium Partners
+```bash
+# Clone repositori
+git clone <repository-url>
+cd ProjekIklan
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# Install dependencies PHP
+composer install
 
-## Contributing
+# Install dependencies frontend
+npm install && npm run build
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Copy environment
+cp .env.example .env
+# Edit .env sesuai konfigurasi database dan mail Anda
 
-## Code of Conduct
+# Generate key
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Migrasi dan seeder
+php artisan migrate --seed
 
-## Security Vulnerabilities
+# Storage link
+php artisan storage:link
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Jalankan
+php artisan serve
+```
 
-## License
+## Role Pengguna
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Role            | Akses                                                       |
+| --------------- | ----------------------------------------------------------- |
+| **super-admin** | Akses penuh ke semua fitur, termasuk manajemen user         |
+| **admin**       | Semua CRUD kecuali manajemen user                           |
+| **editor**      | View + Create + Edit (tanpa delete), akses inquiry terbatas |
+
+Login default setelah seeder: `superadmin@example.com` / `password`
+
+## Pengembang
+
+Zidan Herlangga :
+Dibangun menggunakan [Laravel](https://laravel.com).

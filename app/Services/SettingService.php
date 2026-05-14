@@ -55,6 +55,7 @@ class SettingService
         return [
             'general' => 'Umum',
             'seo' => 'SEO',
+            'verification' => 'Verifikasi',
             'social' => 'Media Sosial',
             'contact' => 'Kontak',
             'appearance' => 'Tampilan',

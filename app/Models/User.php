@@ -20,6 +20,7 @@ class User extends Authenticatable
         'avatar',
         'is_active',
         'last_login_at',
+        'last_login_ip',
     ];
 
     protected $hidden = [
@@ -35,6 +36,11 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'last_login_at' => 'datetime',
         ];
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 
     public function posts(): HasMany

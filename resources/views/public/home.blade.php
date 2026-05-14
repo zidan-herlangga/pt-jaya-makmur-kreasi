@@ -159,8 +159,9 @@
     <section class="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14" data-aos="fade-up">
             <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Bagaimana Cara Kerjanya</span>
-            <h2 class="section-title mt-2">Mudah & Cepat</h2>
-            <p class="section-subtitle mx-auto">Dapatkan titik reklame impian Anda dalam beberapa langkah mudah.</p>
+            <h2 class="section-title mt-2 dark:text-white">Mudah & Cepat</h2>
+            <p class="section-subtitle mx-auto text-slate-500 dark:text-slate-400">Dapatkan titik reklame impian Anda dalam
+                beberapa langkah mudah.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
             <div
@@ -172,8 +173,8 @@
                         class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-green-500/20">
                         <span class="text-2xl font-bold text-white">{{ $step['num'] }}</span>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-lg mb-2">{{ $step['title'] }}</h3>
-                    <p class="text-sm text-slate-500 leading-relaxed">{{ $step['desc'] }}</p>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2 dark:text-white">{{ $step['title'] }}</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed dark:text-slate-400">{{ $step['desc'] }}</p>
                 </div>
             @endforeach
         </div>
@@ -212,8 +213,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14" data-aos="fade-up">
                 <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Keunggulan Kami</span>
-                <h2 class="section-title mt-2">Mengapa Memilih Kami?</h2>
-                <p class="section-subtitle mx-auto">Kami berkomitmen memberikan solusi reklame terbaik untuk bisnis Anda.
+                <h2 class="section-title mt-2 dark:text-white">Mengapa Memilih Kami?</h2>
+                <p class="section-subtitle mx-auto text-slate-500 dark:text-slate-400">Kami berkomitmen memberikan solusi
+                    reklame terbaik untuk bisnis Anda.
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -302,8 +304,9 @@
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10" data-aos="fade-up">
                     <div>
                         <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Karya Terbaru</span>
-                        <h2 class="section-title mt-1">Portofolio Terkini</h2>
-                        <p class="section-subtitle">Proyek reklame yang telah kami kerjakan.</p>
+                        <h2 class="section-title mt-1 dark:text-white">Portofolio Terkini</h2>
+                        <p class="section-subtitle text-slate-500 dark:text-slate-400">Proyek reklame yang telah kami
+                            kerjakan.</p>
                     </div>
                     <a href="{{ route('portofolio.index') }}"
                         class="hidden sm:inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-semibold text-sm transition-colors mt-2">
@@ -385,8 +388,9 @@
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10" data-aos="fade-up">
                     <div>
                         <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Update</span>
-                        <h2 class="section-title mt-1">Berita & Artikel</h2>
-                        <p class="section-subtitle">Informasi terbaru seputar dunia reklame.</p>
+                        <h2 class="section-title mt-1 dark:text-white">Berita & Artikel</h2>
+                        <p class="section-subtitle text-slate-500 dark:text-slate-400">Informasi terbaru seputar dunia
+                            reklame.</p>
                     </div>
                     <a href="{{ route('posts.index') }}"
                         class="hidden sm:inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-semibold text-sm transition-colors mt-2">
@@ -442,39 +446,60 @@
     @endif
 
     {{-- Trust Badges --}}
-    <section class="bg-white border-y border-slate-100 py-12" data-aos="fade-up">
+    <section class="bg-white border-y border-slate-100 py-16" data-aos="fade-up">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-xs text-slate-400 uppercase tracking-wider font-semibold mb-8">Dipercaya oleh
-                perusahaan ternama</p>
-            <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-16  ">
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/garuda-indonesia.png') }}" alt="Garuda Indonesia" class="h-full w-auto">
+            <p class="text-center text-xs text-slate-400 uppercase tracking-widest font-bold mb-12">
+                Dipercaya oleh perusahaan ternama
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+
+                {{-- Item Logo --}}
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/garuda-indonesia.png') }}" alt="Garuda Indonesia"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/authenticity.png') }}" alt="Authenticity" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/authenticity.png') }}" alt="Authenticity"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-8 flex items-center">
-                    <img src="{{ asset('images/gojek.png') }}" alt="Gojek" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/gojek.png') }}" alt="Gojek"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/bank-bjb.png') }}" alt="Bank BJB" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/bank-bjb.png') }}" alt="Bank BJB"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/vivo.png') }}" alt="Vivo" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/vivo.png') }}" alt="Vivo"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
                     <img src="{{ asset('images/astra-honda-motor.png') }}" alt="Astra Honda Motor"
-                        class="h-full w-auto">
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/MR-DIY.png') }}" alt="MR DIY" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/MR-DIY.png') }}" alt="MR DIY"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/fore.png') }}" alt="Astra Honda Motor" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/fore.png') }}" alt="Fore Coffee"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
-                <div class="h-12 flex items-center">
-                    <img src="{{ asset('images/ms-beauty.png') }}" alt="Astra Honda Motor" class="h-full w-auto">
+
+                <div class="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center p-2 group">
+                    <img src="{{ asset('images/ms-beauty.png') }}" alt="MS Beauty"
+                        class="max-h-full max-w-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 </div>
+
             </div>
         </div>
     </section>

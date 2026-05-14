@@ -85,10 +85,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div data-aos="fade-right">
                     <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Profil Perusahaan</span>
-                    <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2 mb-6">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2 mb-6 dark:text-white">
                         {{ setting('site_name', 'PT. Jaya Makmur') }}
                     </h2>
-                    <div class="space-y-4 text-slate-600 leading-relaxed">
+                    <div class="space-y-4 text-slate-600 leading-relaxed dark:text-slate-300">
                         <p>
                             {{ setting('site_name', 'PT. Jaya Makmur Kreasi') }} adalah perusahaan yang bergerak di bidang
                             Advertising,
@@ -217,8 +217,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14" data-aos="fade-up">
                 <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Keunggulan</span>
-                <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2">Mengapa Memilih Kami?</h2>
-                <p class="text-slate-500 mt-2 max-w-2xl mx-auto">Kami berkomitmen memberikan yang terbaik untuk setiap
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2 dark:text-white">Mengapa Memilih Kami?</h2>
+                <p class="text-slate-500 mt-2 max-w-2xl mx-auto dark:text-slate-300">Kami berkomitmen memberikan yang
+                    terbaik untuk setiap
                     klien.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

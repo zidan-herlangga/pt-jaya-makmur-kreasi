@@ -146,4 +146,51 @@ class SeoService
             ],
         ];
     }
+
+    public static function generateLocalBusinessSchema(): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'LocalBusiness',
+            'name' => setting('site_name', config('app.name')),
+            'image' => asset('images/og-default.jpg'),
+            'description' => setting('site_description', 'Solusi Reklame Profesional & Billboard Terbaik'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => setting('address', 'Jl. Sudirman No. 123'),
+                'addressLocality' => 'Jakarta Pusat',
+                'addressCountry' => 'ID',
+            ],
+            'telephone' => setting('phone', '+62 812-3456-7890'),
+            'email' => setting('email', 'info@jayamakmur.com'),
+            'url' => config('app.url'),
+            'priceRange' => 'IDR 5.000.000 - IDR 100.000.000',
+            'openingHours' => 'Mo-Fr 08:00-17:00',
+        ];
+    }
+
+    public static function generateBreadcrumbSchema(array $items): array
+    {
+        $breadcrumbs = [];
+        foreach ($items as $i => $item) {
+            $breadcrumbs[] = [
+                '@type' => 'ListItem',
+                'position' => $i + 1,
+                'name' => $item['name'],
+                'item' => $item['url'] ?? null,
+            ];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs,
+        ];
+    }
+
+    public function withBreadcrumbs(array $items): self
+    {
+        $this->defaults['breadcrumbs'] = self::generateBreadcrumbSchema($items);
+        return $this;
+    }
 }
