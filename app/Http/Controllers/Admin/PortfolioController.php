@@ -9,6 +9,7 @@ use App\Services\ImageOptimizationService;
 use App\Services\SeoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PortfolioController extends Controller
@@ -68,7 +69,7 @@ class PortfolioController extends Controller
             'description' => ['nullable', 'string'],
             'status' => ['required', 'in:draft,published'],
             'thumbnail' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'images' => ['nullable', 'array'],
+            'images' => ['nullable', 'array', 'max:4'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
@@ -96,6 +97,16 @@ class PortfolioController extends Controller
                 $result = $this->imageService->process($image, 'portfolios/gallery', uniqid());
                 $gallery[] = $result['original'];
             }
+
+            if (count($gallery) > 4) {
+                foreach ($gallery as $path) {
+                    $dir = dirname($path);
+                    $filename = pathinfo($path, PATHINFO_FILENAME);
+                    $this->imageService->delete($dir, $filename);
+                }
+                return back()->withErrors(['images' => 'Maksimal 4 gambar untuk galeri.'])->withInput();
+            }
+
             $data['images'] = $gallery;
         }
 
@@ -119,7 +130,17 @@ class PortfolioController extends Controller
         $categories = Category::byType('product')->active()->get();
         $seo = $this->seoService->forPage('Edit: ' . $portfolio->title)->render();
 
-        return view('admin.portfolios.edit', compact('portfolio', 'categories', 'seo'));
+        $existingImages = [];
+        if ($portfolio->images) {
+            foreach ($portfolio->images as $img) {
+                $existingImages[] = [
+                    'path' => $img,
+                    'url' => Storage::url($img),
+                ];
+            }
+        }
+
+        return view('admin.portfolios.edit', compact('portfolio', 'categories', 'seo', 'existingImages'));
     }
 
     public function update(Request $request, Portfolio $portfolio): RedirectResponse
@@ -132,7 +153,7 @@ class PortfolioController extends Controller
             'description' => ['nullable', 'string'],
             'status' => ['required', 'in:draft,published'],
             'thumbnail' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'images' => ['nullable', 'array'],
+            'images' => ['nullable', 'array', 'max:4'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
@@ -158,14 +179,31 @@ class PortfolioController extends Controller
             $data['og_image'] = $images['og'];
         }
 
+        $gallery = $portfolio->images ?? [];
+
+        $deletedImages = $request->input('deleted_images');
+        if ($deletedImages) {
+            $deletedPaths = json_decode($deletedImages, true) ?? [];
+            foreach ($deletedPaths as $delPath) {
+                $dir = dirname($delPath);
+                $filename = pathinfo($delPath, PATHINFO_FILENAME);
+                $this->imageService->delete($dir, $filename);
+                $gallery = array_filter($gallery, fn($img) => $img !== $delPath);
+            }
+        }
+
         if ($request->hasFile('images')) {
-            $gallery = $portfolio->images ?? [];
             foreach ($request->file('images') as $image) {
                 $result = $this->imageService->process($image, 'portfolios/gallery', uniqid());
                 $gallery[] = $result['original'];
             }
-            $data['images'] = $gallery;
         }
+
+        if (count($gallery) > 4) {
+            return back()->withErrors(['images' => 'Maksimal 4 gambar untuk galeri.'])->withInput();
+        }
+
+        $data['images'] = array_values($gallery);
 
         $portfolio->update($data);
 

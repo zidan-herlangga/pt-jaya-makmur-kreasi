@@ -8,7 +8,9 @@
         <p class="text-slate-500 mt-1">Tambahkan proyek portofolio reklame baru.</p>
     </div>
 
-    <form action="{{ route('admin.portfolios.store') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+    <form action="{{ route('admin.portfolios.store') }}" method="POST" enctype="multipart/form-data"
+          class="bg-white rounded-xl border border-slate-200 p-6 space-y-6"
+          x-data="galleryManager()" @submit="beforeSubmit">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -71,9 +73,26 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Galeri</label>
-                <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp"
-                       class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Galeri <span class="text-xs text-slate-400">(Maks. 4 gambar)</span></label>
+                <input type="hidden" name="deleted_images" value="[]">
+
+                <div class="grid grid-cols-4 gap-3 mt-2" x-show="newFiles.length > 0">
+                    <template x-for="(file, index) in newFiles" :key="index">
+                        <div class="relative aspect-square rounded-lg overflow-hidden group border border-slate-200 bg-slate-50">
+                            <img :src="file.preview" class="w-full h-full object-cover">
+                            <button type="button" @click="removeNew(index)"
+                                    class="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="canAddMore" class="mt-2">
+                    <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp" @change="addFiles($event)"
+                           class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                </div>
+                <p class="text-xs text-slate-400 mt-1" x-text="statusText"></p>
             </div>
         </div>
 

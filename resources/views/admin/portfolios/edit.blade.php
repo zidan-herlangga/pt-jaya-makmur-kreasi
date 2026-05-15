@@ -7,7 +7,9 @@
         <h1 class="text-2xl font-bold text-slate-900 mt-2">Edit Portfolio</h1>
     </div>
 
-    <form action="{{ route('admin.portfolios.update', $portfolio) }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+    <form action="{{ route('admin.portfolios.update', $portfolio) }}" method="POST" enctype="multipart/form-data"
+          class="bg-white rounded-xl border border-slate-200 p-6 space-y-6"
+          x-data="galleryManager({ existingImages: {{ Illuminate\Support\Js::from($existingImages) }} })" @submit="beforeSubmit">
         @csrf
         @method('PUT')
 
@@ -72,16 +74,38 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Galeri</label>
-                <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp"
-                       class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-                @if($portfolio->images)
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        @foreach($portfolio->images as $img)
-                            <img src="{{ Storage::url($img) }}" class="w-16 h-16 object-cover rounded-lg">
-                        @endforeach
-                    </div>
-                @endif
+                <label class="block text-sm font-medium text-slate-700 mb-1">Galeri <span class="text-xs text-slate-400">(Maks. 4 gambar)</span></label>
+                <input type="hidden" name="deleted_images" value="[]">
+
+                <div class="grid grid-cols-4 gap-3 mt-2" x-show="existingImages.length > 0">
+                    <template x-for="(img, index) in existingImages" :key="'old_'+index">
+                        <div class="relative aspect-square rounded-lg overflow-hidden group border border-slate-200 bg-slate-50">
+                            <img :src="img.url" class="w-full h-full object-cover">
+                            <button type="button" @click="removeExisting(index)"
+                                    class="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="grid grid-cols-4 gap-3 mt-2" x-show="newFiles.length > 0">
+                    <template x-for="(file, index) in newFiles" :key="'new_'+index">
+                        <div class="relative aspect-square rounded-lg overflow-hidden group border border-slate-200 bg-slate-50">
+                            <img :src="file.preview" class="w-full h-full object-cover">
+                            <button type="button" @click="removeNew(index)"
+                                    class="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="canAddMore" class="mt-2">
+                    <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/webp" @change="addFiles($event)"
+                           class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                </div>
+                <p class="text-xs text-slate-400 mt-1" x-text="statusText"></p>
             </div>
         </div>
 
