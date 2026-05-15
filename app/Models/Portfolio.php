@@ -54,8 +54,7 @@ class Portfolio extends Model
         });
 
         static::saving(function (self $portfolio) {
-            // Auto-set published_at when publishing
-            if ($portfolio->status === 'published' && empty($portfolio->published_at)) {
+            if ($portfolio->status === 'published' && empty($portfolio->getAttributes()['published_at'] ?? null)) {
                 $portfolio->published_at = now();
             }
 

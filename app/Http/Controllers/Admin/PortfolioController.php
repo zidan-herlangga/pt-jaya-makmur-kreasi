@@ -76,6 +76,10 @@ class PortfolioController extends Controller
             'published_at' => ['nullable', 'date'],
         ]);
 
+        if (empty($data['published_at'])) {
+            $data['published_at'] = null;
+        }
+
         if ($request->hasFile('thumbnail')) {
             $images = $this->imageService->process(
                 $request->file('thumbnail'),
@@ -135,6 +139,10 @@ class PortfolioController extends Controller
             'meta_keywords' => ['nullable', 'string', 'max:500'],
             'published_at' => ['nullable', 'date'],
         ]);
+
+        if (empty($data['published_at'])) {
+            $data['published_at'] = null;
+        }
 
         if ($request->hasFile('thumbnail')) {
             if ($portfolio->thumbnail) {
