@@ -63,13 +63,22 @@ document.addEventListener('alpine:init', () => {
         },
 
         beforeSubmit() {
-            const dt = new DataTransfer();
-            this.newFiles.forEach(f => dt.items.add(f.file));
-            const input = document.querySelector('input[name="images[]"]');
-            if (input) input.files = dt.files;
+            try {
+                const input = document.querySelector('input[name="images[]"]');
 
-            const deletedInput = document.querySelector('input[name="deleted_images"]');
-            if (deletedInput) deletedInput.value = JSON.stringify(this.deletedImages);
+                if (this.newFiles.length > 0 && input) {
+                    const dt = new DataTransfer();
+                    this.newFiles.forEach(f => dt.items.add(f.file));
+                    input.files = dt.files;
+                } else if (input) {
+                    input.value = '';
+                }
+
+                const deletedInput = document.querySelector('input[name="deleted_images"]');
+                if (deletedInput) deletedInput.value = JSON.stringify(this.deletedImages);
+            } catch (e) {
+                console.error('Gallery beforeSubmit error:', e);
+            }
         }
     }));
 });

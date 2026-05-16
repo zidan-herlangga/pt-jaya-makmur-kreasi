@@ -15,8 +15,6 @@ use Illuminate\View\View;
 class PortfolioController extends Controller
 {
 
-    // Kenapa kadang saat buat postingan itu ga masuk ke tampilan? Perbaiki dong!
-
     public function __construct(
         private ImageOptimizationService $imageService,
         private SeoService $seoService
@@ -87,10 +85,11 @@ class PortfolioController extends Controller
         }
 
         if ($request->hasFile('thumbnail')) {
+            $slug = filled($data['slug'] ?? null) ? $data['slug'] : str($data['title'])->slug();
             $images = $this->imageService->process(
                 $request->file('thumbnail'),
                 'portfolios',
-                $data['slug'] ?? str($data['title'])->slug()
+                $slug
             );
             $data['thumbnail'] = $images['original'];
             $data['og_image'] = $images['og'];
@@ -115,7 +114,14 @@ class PortfolioController extends Controller
             $data['images'] = $gallery;
         }
 
-        $portfolio = Portfolio::create($data);
+        try {
+            $portfolio = Portfolio::create($data);
+        } catch (\Throwable $e) {
+            report($e);
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan portfolio. Silakan coba lagi.');
+        }
 
         return redirect()
             ->route('admin.portfolios.index')
@@ -178,10 +184,11 @@ class PortfolioController extends Controller
                 $this->imageService->delete('portfolios', $portfolio->slug);
             }
 
+            $slug = filled($data['slug'] ?? null) ? $data['slug'] : $portfolio->slug;
             $images = $this->imageService->process(
                 $request->file('thumbnail'),
                 'portfolios',
-                $data['slug'] ?? $portfolio->slug
+                $slug
             );
             $data['thumbnail'] = $images['original'];
             $data['og_image'] = $images['og'];
@@ -213,7 +220,14 @@ class PortfolioController extends Controller
 
         $data['images'] = array_values($gallery);
 
-        $portfolio->update($data);
+        try {
+            $portfolio->update($data);
+        } catch (\Throwable $e) {
+            report($e);
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui portfolio. Silakan coba lagi.');
+        }
 
         return redirect()
             ->route('admin.portfolios.index')
@@ -226,7 +240,12 @@ class PortfolioController extends Controller
             $this->imageService->delete('portfolios', $portfolio->slug);
         }
 
-        $portfolio->delete();
+        try {
+            $portfolio->delete();
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->with('error', 'Gagal menghapus portfolio. Silakan coba lagi.');
+        }
 
         return redirect()
             ->route('admin.portfolios.index')
