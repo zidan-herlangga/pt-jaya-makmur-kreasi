@@ -14,6 +14,9 @@ use Illuminate\View\View;
 
 class PortfolioController extends Controller
 {
+
+    // Kenapa kadang saat buat postingan itu ga masuk ke tampilan? Perbaiki dong!
+
     public function __construct(
         private ImageOptimizationService $imageService,
         private SeoService $seoService
@@ -77,7 +80,9 @@ class PortfolioController extends Controller
             'published_at' => ['nullable', 'date'],
         ]);
 
-        if (empty($data['published_at'])) {
+        if ($data['status'] === 'published' && empty($data['published_at'])) {
+            $data['published_at'] = now();
+        } elseif ($data['status'] === 'draft') {
             $data['published_at'] = null;
         }
 
@@ -161,7 +166,10 @@ class PortfolioController extends Controller
             'published_at' => ['nullable', 'date'],
         ]);
 
-        if (empty($data['published_at'])) {
+        if ($data['status'] === 'published' && empty($data['published_at'])) {
+            // Jika sebelumnya sudah ada tanggal publikasi, jangan ditimpa kecuali memang kosong
+            $data['published_at'] = $portfolio->published_at ?? now();
+        } elseif ($data['status'] === 'draft') {
             $data['published_at'] = null;
         }
 
