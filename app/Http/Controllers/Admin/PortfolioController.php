@@ -45,8 +45,8 @@ class PortfolioController extends Controller
         $categories = Category::byType('product')->active()->get();
         $stats = [
             'total' => Portfolio::count(),
-            'published' => Portfolio::published()->count(),
-            'draft' => Portfolio::draft()->count(),
+            'published' => Portfolio::where('status', 'published')->count(), // Bypass scope waktu
+            'draft' => Portfolio::where('status', 'draft')->count(),
         ];
 
         return view('admin.portfolios.index', compact('portfolios', 'categories', 'stats'));
