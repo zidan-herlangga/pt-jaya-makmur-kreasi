@@ -101,7 +101,7 @@
     {{-- Offcanvas Panel --}}
     <div x-show="offcanvas" x-transition:enter="transition-transform ease-out duration-300"
         x-transition:leave="transition-transform ease-in duration-200"
-        class="fixed top-0 right-0 z-50 h-screen w-72 max-w-[85vw] bg-slate-900 border-l border-slate-800 shadow-2xl dark:bg-slate-950 dark:border-slate-700 lg:hidden overflow-y-auto"
+        class="fixed top-0 right-0 z-50 h-screen w-72 max-w-[85vw] bg-slate-900 border-l border-slate-800 shadow-2xl dark:bg-slate-950 dark:border-slate-700 lg:hidden overflow-y-auto z-50"
         @click.away="offcanvas = false">
         <div class="flex flex-col min-h-full">
             {{-- Offcanvas Header --}}

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PortfolioController as AdminPortfolioController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\AiModelController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\AboutController;
@@ -55,6 +56,11 @@ Route::prefix('portofolio')->name('portofolio.')->group(function () {
 
 Route::get('/produk/{point:slug}', [CatalogController::class, 'show'])->name('product.show');
 
+// Chatbot API
+Route::post('/api/chatbot/query', [\App\Http\Controllers\Api\ChatbotController::class, 'query'])
+    ->name('api.chatbot.query')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
 // Auth Routes (Login only)
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
@@ -102,6 +108,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::prefix('ai-models')->name('ai-models.')->group(function () {
+        Route::get('/', [AiModelController::class, 'index'])->name('index');
+        Route::get('/create', [AiModelController::class, 'create'])->name('create');
+        Route::post('/', [AiModelController::class, 'store'])->name('store');
+        Route::get('/{aiModel}/edit', [AiModelController::class, 'edit'])->name('edit');
+        Route::put('/{aiModel}', [AiModelController::class, 'update'])->name('update');
+        Route::delete('/{aiModel}', [AiModelController::class, 'destroy'])->name('destroy');
+        Route::patch('/{aiModel}/toggle-active', [AiModelController::class, 'toggleActive'])->name('toggle-active');
+    });
 
     Route::prefix('advertising-points')->name('advertising-points.')->group(function () {
         Route::get('/', [AdvertisingPointController::class, 'index'])->name('index');
