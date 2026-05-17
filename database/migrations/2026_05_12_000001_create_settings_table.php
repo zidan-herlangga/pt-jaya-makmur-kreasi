@@ -41,6 +41,7 @@ return new class extends Migration
             ['contact', 'address', 'Jl. Sudirman No. 123, Jakarta Pusat', 'text', 'Alamat', 'Alamat perusahaan'],
             ['contact', 'phone', '+62 812-3456-7890', 'text', 'Telepon', 'Nomor telepon perusahaan'],
             ['contact', 'email', 'info@jayamakmur.com', 'text', 'Email', 'Email kontak perusahaan'],
+            ['contact', 'map_iframe', '', 'text', 'Iframe Peta', 'Kode iframe untuk menampilkan peta lokasi perusahaan'],
 
             ['appearance', 'favicon', '', 'image', 'Favicon', 'Icon tab browser (32x32 px)'],
             ['appearance', 'logo', '', 'image', 'Logo', 'Logo website'],

@@ -33,30 +33,29 @@
 
     {{-- Filters --}}
     <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <form method="GET" class="flex flex-wrap gap-3">
+        <form method="GET" x-data="{ search: '{{ request('search') }}', city: '{{ request('city') }}', status: '{{ request('status') }}', category_id: '{{ request('category_id') }}' }" x-ref="filterForm" class="flex flex-wrap gap-3">
             <div class="flex-1 min-w-[200px]">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari titik atau lokasi..."
+                <input type="text" name="search" x-model="search" @input.debounce.500ms="$refs.filterForm.submit()" placeholder="Cari titik atau lokasi..."
                        class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
             </div>
-            <select name="city" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+            <select name="city" x-model="city" @change="$refs.filterForm.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 <option value="">Semua Kota</option>
                 @foreach($cities as $city)
-                    <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
+                    <option value="{{ $city }}">{{ $city }}</option>
                 @endforeach
             </select>
-            <select name="status" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+            <select name="status" x-model="status" @change="$refs.filterForm.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 <option value="">Semua Status</option>
-                <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
-                <option value="booked" {{ request('status') == 'booked' ? 'selected' : '' }}>Dipesan</option>
-                <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>Perawatan</option>
+                <option value="available">Tersedia</option>
+                <option value="booked">Dipesan</option>
+                <option value="maintenance">Perawatan</option>
             </select>
-            <select name="category_id" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+            <select name="category_id" x-model="category_id" @change="$refs.filterForm.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 <option value="">Semua Kategori</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">Filter</button>
             @if(request()->hasAny(['search', 'city', 'status', 'category_id']))
                 <a href="{{ route('admin.advertising-points.index') }}" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Reset</a>
             @endif
@@ -64,11 +63,36 @@
     </div>
 
     {{-- Table --}}
-    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden"
+         x-data="{
+             selectedIds: [],
+             get count() { return this.selectedIds.length; },
+             toggleSelectAll() {
+                 const cbs = document.querySelectorAll('.row-checkbox');
+                 if (this.selectedIds.length === cbs.length) {
+                     this.selectedIds = [];
+                 } else {
+                     this.selectedIds = Array.from(cbs).map(cb => cb.value);
+                 }
+             },
+             showBulkDeleteModal: false
+         }">
+        <div x-show="selectedIds.length > 0" x-cloak
+             class="flex items-center justify-between px-6 py-3 bg-green-50 border-b border-green-200">
+            <span class="text-sm font-medium text-green-800" x-text="count + ' item dipilih'"></span>
+            <div class="flex gap-2">
+                <button @click="selectedIds = []" class="px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                <button @click="showBulkDeleteModal = true" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-medium transition-colors">Hapus Massal</button>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="bg-slate-50 text-slate-600 font-medium">
                     <tr>
+                        <th class="px-6 py-4 w-12">
+                            <input type="checkbox" @click="toggleSelectAll()" :checked="selectedIds.length > 0 && selectedIds.length === document.querySelectorAll('.row-checkbox').length"
+                                   class="rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        </th>
                         <th class="px-6 py-4">Titik</th>
                         <th class="px-6 py-4">Lokasi</th>
                         <th class="px-6 py-4">Harga</th>
@@ -79,7 +103,10 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($points as $point)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors" :class="selectedIds.includes('{{ $point->id }}') && 'bg-green-50'">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" value="{{ $point->id }}" x-model="selectedIds" class="row-checkbox rounded border-slate-300 text-green-600 focus:ring-green-500">
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden shrink-0">
@@ -131,7 +158,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                                 <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                                 <p>Tidak ada data titik reklame.</p>
                                 <a href="{{ route('admin.advertising-points.create') }}" class="text-green-600 hover:underline mt-1 inline-block">Tambah baru</a>
@@ -146,6 +173,27 @@
                 {{ $points->links() }}
             </div>
         @endif
+
+        {{-- Bulk Delete Modal --}}
+        <div x-show="showBulkDeleteModal" x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center"
+             @keydown.window.escape="showBulkDeleteModal = false">
+            <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showBulkDeleteModal = false"></div>
+            <div class="relative bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4">
+                <h3 class="text-lg font-bold text-slate-900">Konfirmasi Hapus</h3>
+                <p class="text-sm text-slate-500 mt-2" x-text="'Anda akan menghapus ' + count + ' titik reklame. Tindakan ini tidak dapat dibatalkan.'"></p>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button @click="showBulkDeleteModal = false" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                    <form method="POST" action="{{ route('admin.advertising-points.bulk-destroy') }}">
+                        @csrf
+                        <template x-for="id in selectedIds" :key="id">
+                            <input type="hidden" name="ids[]" :value="id">
+                        </template>
+                        <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-colors">Ya, Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

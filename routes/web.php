@@ -111,18 +111,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::get('/{advertisingPoint}/edit', [AdvertisingPointController::class, 'edit'])->name('edit');
         Route::put('/{advertisingPoint}', [AdvertisingPointController::class, 'update'])->name('update')->withTrashed();
         Route::delete('/{advertisingPoint}', [AdvertisingPointController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-destroy', [AdvertisingPointController::class, 'bulkDestroy'])->name('bulk-destroy');
         Route::patch('/{advertisingPoint}/toggle-status', [AdvertisingPointController::class, 'toggleStatus'])->name('toggle-status');
     });
 
     Route::resource('portfolios', AdminPortfolioController::class);
+    Route::post('/portfolios/bulk-destroy', [AdminPortfolioController::class, 'bulkDestroy'])->name('portfolios.bulk-destroy');
     Route::resource('posts', AdminPostController::class);
+    Route::post('/posts/bulk-destroy', [AdminPostController::class, 'bulkDestroy'])->name('posts.bulk-destroy');
+
     Route::resource('inquiries', InquiryController::class)->only(['index', 'show', 'update', 'destroy']);
+    Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
+    Route::post('/inquiries/bulk-destroy', [InquiryController::class, 'bulkDestroy'])->name('inquiries.bulk-destroy');
     Route::patch('/inquiries/{inquiry}/process', [InquiryController::class, 'markProcessed'])->name('inquiries.process');
+    
     Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::post('/categories/bulk-destroy', [CategoryController::class, 'bulkDestroy'])->name('categories.bulk-destroy');
     Route::resource('users', UserController::class)->except(['show']);
+    Route::post('/users/bulk-destroy', [UserController::class, 'bulkDestroy'])->name('users.bulk-destroy');
     Route::prefix('newsletter-subscribers')->name('newsletter-subscribers.')->group(function () {
         Route::get('/', [NewsletterSubscriberController::class, 'index'])->name('index');
         Route::delete('/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-destroy', [NewsletterSubscriberController::class, 'bulkDestroy'])->name('bulk-destroy');
         Route::get('/export', [NewsletterSubscriberController::class, 'export'])->name('export');
     });
 });

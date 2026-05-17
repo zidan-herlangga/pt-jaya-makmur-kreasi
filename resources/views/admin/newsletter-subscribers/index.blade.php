@@ -34,12 +34,11 @@
 
     {{-- Search --}}
     <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <form method="GET" class="flex flex-wrap gap-3">
+        <form method="GET" x-data="{ search: '{{ request('search') }}' }" x-ref="filterForm" class="flex flex-wrap gap-3">
             <div class="flex-1 min-w-[200px]">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari email..."
+                <input type="text" name="search" x-model="search" @input.debounce.500ms="$refs.filterForm.submit()" placeholder="Cari email..."
                        class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
             </div>
-            <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">Cari</button>
             @if(request()->has('search'))
                 <a href="{{ route('admin.newsletter-subscribers.index') }}" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Reset</a>
             @endif
@@ -47,12 +46,34 @@
     </div>
 
     {{-- Table --}}
-    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden"
+         x-data="{
+             selectedIds: [],
+             get count() { return this.selectedIds.length; },
+             toggleSelectAll() {
+                 const cbs = document.querySelectorAll('.row-checkbox');
+                 if (this.selectedIds.length === cbs.length) { this.selectedIds = []; }
+                 else { this.selectedIds = Array.from(cbs).map(cb => cb.value); }
+             },
+             showBulkDeleteModal: false
+         }">
+        <div x-show="selectedIds.length > 0" x-cloak
+             class="flex items-center justify-between px-6 py-3 bg-green-50 border-b border-green-200">
+            <span class="text-sm font-medium text-green-800" x-text="count + ' item dipilih'"></span>
+            <div class="flex gap-2">
+                <button @click="selectedIds = []" class="px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                <button @click="showBulkDeleteModal = true" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-medium transition-colors">Hapus Massal</button>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="bg-slate-50 text-slate-600 font-medium">
                     <tr>
-                        <th class="px-6 py-4 w-12">No</th>
+                        <th class="px-6 py-4 w-12">
+                            <input type="checkbox" @click="toggleSelectAll()" :checked="selectedIds.length > 0 && selectedIds.length === document.querySelectorAll('.row-checkbox').length"
+                                   class="rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        </th>
+                        <th class="px-6 py-4">No</th>
                         <th class="px-6 py-4">Email</th>
                         <th class="px-6 py-4">Tanggal Subscribe</th>
                         <th class="px-6 py-4 text-right">Aksi</th>
@@ -60,7 +81,10 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($subscribers as $i => $subscriber)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors" :class="selectedIds.includes('{{ $subscriber->id }}') && 'bg-green-50'">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" value="{{ $subscriber->id }}" x-model="selectedIds" class="row-checkbox rounded border-slate-300 text-green-600 focus:ring-green-500">
+                            </td>
                             <td class="px-6 py-4 text-slate-500">{{ $subscribers->firstItem() + $i }}</td>
                             <td class="px-6 py-4">
                                 <p class="font-medium text-slate-900">{{ $subscriber->email }}</p>
@@ -81,7 +105,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">Belum ada subscriber.</td>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400">Belum ada subscriber.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -90,6 +114,26 @@
         @if($subscribers->hasPages())
             <div class="px-6 py-4 border-t border-slate-100">{{ $subscribers->links() }}</div>
         @endif
+
+        <div x-show="showBulkDeleteModal" x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center"
+             @keydown.window.escape="showBulkDeleteModal = false">
+            <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showBulkDeleteModal = false"></div>
+            <div class="relative bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4">
+                <h3 class="text-lg font-bold text-slate-900">Konfirmasi Hapus</h3>
+                <p class="text-sm text-slate-500 mt-2" x-text="'Anda akan menghapus ' + count + ' subscriber. Tindakan ini tidak dapat dibatalkan.'"></p>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button @click="showBulkDeleteModal = false" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                    <form method="POST" action="{{ route('admin.newsletter-subscribers.bulk-destroy') }}">
+                        @csrf
+                        <template x-for="id in selectedIds" :key="id">
+                            <input type="hidden" name="ids[]" :value="id">
+                        </template>
+                        <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-colors">Ya, Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

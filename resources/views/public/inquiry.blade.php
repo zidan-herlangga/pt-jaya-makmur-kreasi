@@ -114,7 +114,7 @@
                     </svg>
                 </div>
                 <h3 class="font-semibold text-slate-900 mb-1">Email</h3>
-                <p class="text-sm text-slate-500">info@reklamepro.com</p>
+                <p class="text-sm text-slate-500">{{ setting('email', 'contact.email') }}</p>
             </div>
             <div class="bg-white rounded-xl border border-slate-200 p-6 text-center">
                 <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -126,15 +126,23 @@
                     </svg>
                 </div>
                 <h3 class="font-semibold text-slate-900 mb-1">Alamat</h3>
-                <p class="text-sm text-slate-500">Jakarta, Indonesia</p>
+                <p class="text-sm text-slate-500">{{ setting('address', 'contact.address') }}</p>
             </div>
         </div>
 
         {{-- map iframe --}}
         <div class="mt-10">
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d991.1234567890123!2d106.827153!3d-6.175110!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5b8c1234567%3A0xabcdef1234567890!2sMonas%20Jakarta!5e0!3m2!1sen!2sid!4v1690000000000"
-                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden">
+                @if (!setting('map_iframe', 'contact.map_iframe'))
+                    <div
+                        class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400 text-sm dark:bg-slate-700 dark:text-slate-500">
+                        Map iframe belum disetting
+                    </div>
+                @else
+                    {!! setting('map_iframe', 'contact.map_iframe') !!}
+                @endif
+                {{-- {!! setting('map_iframe', 'contact.map_iframe') !!} --}}
+            </div>
+        </div>
     </section>
 @endsection

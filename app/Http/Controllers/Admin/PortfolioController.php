@@ -234,6 +234,28 @@ class PortfolioController extends Controller
             ->with('success', "Portfolio '{$portfolio->title}' berhasil diperbarui.");
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $portfolios = Portfolio::whereIn('id', $request->ids)->get();
+        $count = 0;
+        foreach ($portfolios as $portfolio) {
+            if ($portfolio->thumbnail) {
+                $this->imageService->delete('portfolios', $portfolio->slug);
+            }
+            try {
+                $portfolio->delete();
+                $count++;
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+        if ($count === 0) {
+            return redirect()->back()->with('error', 'Gagal menghapus portfolio.');
+        }
+        return redirect()->back()->with('success', "$count portfolio berhasil dihapus.");
+    }
+
     public function destroy(Portfolio $portfolio): RedirectResponse
     {
         if ($portfolio->thumbnail) {

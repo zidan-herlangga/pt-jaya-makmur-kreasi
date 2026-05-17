@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
@@ -32,6 +33,14 @@ class NewsletterSubscriberController extends Controller
         ];
 
         return view('admin.newsletter-subscribers.index', compact('subscribers', 'stats'));
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        NewsletterSubscriber::whereIn('id', $request->ids)->delete();
+        $count = count($request->ids);
+        return redirect()->back()->with('success', "$count subscriber berhasil dihapus.");
     }
 
     public function destroy(NewsletterSubscriber $newsletterSubscriber)

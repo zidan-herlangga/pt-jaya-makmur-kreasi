@@ -80,6 +80,24 @@ class CategoryController extends Controller
             ->with('success', "Kategori '{$category->name}' berhasil diperbarui.");
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $categories = Category::whereIn('id', $request->ids)->get();
+        $count = 0;
+        foreach ($categories as $category) {
+            if ($category->advertisingPoints()->exists() || $category->posts()->exists()) {
+                continue;
+            }
+            $category->delete();
+            $count++;
+        }
+        if ($count === 0) {
+            return redirect()->back()->with('error', 'Tidak ada kategori yang bisa dihapus (masih memiliki data terkait).');
+        }
+        return redirect()->back()->with('success', "$count kategori berhasil dihapus.");
+    }
+
     public function destroy(Category $category): RedirectResponse
     {
         if ($category->advertisingPoints()->exists() || $category->posts()->exists()) {

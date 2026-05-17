@@ -185,6 +185,33 @@ class AdvertisingPointController extends Controller
             ->with('success', "Titik reklame '{$advertisingPoint->title}' berhasil diperbarui.");
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $points = AdvertisingPoint::whereIn('id', $request->ids)->get();
+        $count = 0;
+        foreach ($points as $point) {
+            if ($point->thumbnail) {
+                $this->imageService->delete('advertising-points', $point->slug);
+            }
+            if ($point->og_image) {
+                $ogPath = pathinfo($point->og_image, PATHINFO_DIRNAME);
+                $ogFilename = pathinfo($point->og_image, PATHINFO_FILENAME);
+                $this->imageService->delete($ogPath, $ogFilename);
+            }
+            if (!empty($point->gallery)) {
+                foreach ($point->gallery as $img) {
+                    $galPath = pathinfo($img, PATHINFO_DIRNAME);
+                    $galFilename = pathinfo($img, PATHINFO_FILENAME);
+                    $this->imageService->delete($galPath, $galFilename);
+                }
+            }
+            $point->forceDelete();
+            $count++;
+        }
+        return redirect()->back()->with('success', "$count titik reklame berhasil dihapus.");
+    }
+
     public function destroy(AdvertisingPoint $advertisingPoint): RedirectResponse
     {
         if ($advertisingPoint->thumbnail) {

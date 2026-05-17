@@ -146,6 +146,21 @@ class PostController extends Controller
             ->with('success', "Berita '{$post->title}' berhasil diperbarui.");
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $posts = Post::whereIn('id', $request->ids)->get();
+        $count = 0;
+        foreach ($posts as $post) {
+            if ($post->featured_image) {
+                $this->imageService->delete('posts', $post->slug);
+            }
+            $post->delete();
+            $count++;
+        }
+        return redirect()->back()->with('success', "$count berita berhasil dihapus.");
+    }
+
     public function destroy(Post $post): RedirectResponse
     {
         if ($post->featured_image) {

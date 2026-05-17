@@ -15,20 +15,44 @@
     </div>
 
     <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <form method="GET" class="flex gap-3">
-            <select name="type" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+        <form method="GET" x-data="{ type: '{{ request('type') }}' }" x-ref="filterForm" class="flex gap-3">
+            <select name="type" x-model="type" @change="$refs.filterForm.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 <option value="">Semua Tipe</option>
-                <option value="product" {{ request('type') == 'product' ? 'selected' : '' }}>Produk</option>
-                <option value="post" {{ request('type') == 'post' ? 'selected' : '' }}>Post</option>
+                <option value="product">Produk</option>
+                <option value="post">Post</option>
             </select>
-            <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">Filter</button>
+            @if(request()->has('type'))
+                <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Reset</a>
+            @endif
         </form>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden"
+         x-data="{
+             selectedIds: [],
+             get count() { return this.selectedIds.length; },
+             toggleSelectAll() {
+                 const cbs = document.querySelectorAll('.row-checkbox');
+                 if (this.selectedIds.length === cbs.length) { this.selectedIds = []; }
+                 else { this.selectedIds = Array.from(cbs).map(cb => cb.value); }
+             },
+             showBulkDeleteModal: false
+         }">
+        <div x-show="selectedIds.length > 0" x-cloak
+             class="flex items-center justify-between px-6 py-3 bg-green-50 border-b border-green-200">
+            <span class="text-sm font-medium text-green-800" x-text="count + ' item dipilih'"></span>
+            <div class="flex gap-2">
+                <button @click="selectedIds = []" class="px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                <button @click="showBulkDeleteModal = true" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-medium transition-colors">Hapus Massal</button>
+            </div>
+        </div>
         <table class="w-full text-sm text-left">
             <thead class="bg-slate-50 text-slate-600 font-medium">
                 <tr>
+                    <th class="px-6 py-4 w-12">
+                        <input type="checkbox" @click="toggleSelectAll()" :checked="selectedIds.length > 0 && selectedIds.length === document.querySelectorAll('.row-checkbox').length"
+                               class="rounded border-slate-300 text-green-600 focus:ring-green-500">
+                    </th>
                     <th class="px-6 py-4">Nama</th>
                     <th class="px-6 py-4">Slug</th>
                     <th class="px-6 py-4">Tipe</th>
@@ -39,7 +63,10 @@
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse($categories as $category)
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors" :class="selectedIds.includes('{{ $category->id }}') && 'bg-green-50'">
+                        <td class="px-6 py-4">
+                            <input type="checkbox" value="{{ $category->id }}" x-model="selectedIds" class="row-checkbox rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
                                 @if($category->icon)
@@ -79,16 +106,36 @@
                             </div>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">Tidak ada data kategori.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">Tidak ada data kategori.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         @if($categories->hasPages())
             <div class="px-6 py-4 border-t border-slate-100">{{ $categories->links() }}</div>
         @endif
+
+        <div x-show="showBulkDeleteModal" x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center"
+             @keydown.window.escape="showBulkDeleteModal = false">
+            <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showBulkDeleteModal = false"></div>
+            <div class="relative bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4">
+                <h3 class="text-lg font-bold text-slate-900">Konfirmasi Hapus</h3>
+                <p class="text-sm text-slate-500 mt-2" x-text="'Anda akan menghapus ' + count + ' kategori. Tindakan ini tidak dapat dibatalkan.'"></p>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button @click="showBulkDeleteModal = false" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">Batal</button>
+                    <form method="POST" action="{{ route('admin.categories.bulk-destroy') }}">
+                        @csrf
+                        <template x-for="id in selectedIds" :key="id">
+                            <input type="hidden" name="ids[]" :value="id">
+                        </template>
+                        <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-medium transition-colors">Ya, Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

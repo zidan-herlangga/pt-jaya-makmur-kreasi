@@ -79,6 +79,14 @@ class InquiryController extends Controller
             ->with('success', 'Inquiry ditandai sebagai diproses.');
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        Inquiry::whereIn('id', $request->ids)->delete();
+        $count = count($request->ids);
+        return redirect()->back()->with('success', "$count inquiry berhasil dihapus.");
+    }
+
     public function destroy(Inquiry $inquiry): RedirectResponse
     {
         $inquiry->delete();

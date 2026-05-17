@@ -99,6 +99,24 @@ class UserController extends Controller
             ->with('success', "Pengguna '{$user->name}' berhasil diperbarui.");
     }
 
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => ['required', 'array'], 'ids.*' => ['integer']]);
+        $users = User::whereIn('id', $request->ids)->get();
+        $count = 0;
+        foreach ($users as $user) {
+            if ($user->id === auth()->id()) {
+                continue;
+            }
+            $user->delete();
+            $count++;
+        }
+        if ($count === 0) {
+            return redirect()->back()->with('error', 'Tidak ada pengguna yang bisa dihapus.');
+        }
+        return redirect()->back()->with('success', "$count pengguna berhasil dihapus.");
+    }
+
     public function destroy(User $user): RedirectResponse
     {
         if ($user->id === auth()->id()) {
