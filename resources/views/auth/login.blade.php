@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
 </head>
 <body class="font-sans antialiased bg-slate-100 text-slate-900">
     <div class="min-h-screen flex items-center justify-center p-4">
@@ -63,7 +63,7 @@
                         </label>
                     </div>
 
-                    <div class="g-recaptcha flex justify-center" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                    <input type="hidden" name="g-recaptcha-response" id="recaptcha-token">
                     @error('g-recaptcha-response')
                         <p class="text-xs text-rose-500">{{ $message }}</p>
                     @enderror
@@ -80,5 +80,16 @@
             </p>
         </div>
     </div>
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'login'}).then(function(token) {
+                document.getElementById('recaptcha-token').value = token;
+                e.target.submit();
+            });
+        });
+    });
+</script>
 </body>
 </html>

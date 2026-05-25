@@ -79,7 +79,9 @@ Route::middleware('guest')->group(function () {
                     'remoteip' => request()->ip(),
                 ]);
 
-                if (! $response->json('success')) {
+                $body = $response->json();
+
+                if (! ($body['success'] ?? false) || ($body['score'] ?? 0) < 0.5) {
                     $fail('Verifikasi reCAPTCHA gagal. Silakan coba lagi.');
                 }
             }],
