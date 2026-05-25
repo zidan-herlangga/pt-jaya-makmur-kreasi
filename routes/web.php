@@ -21,6 +21,7 @@ use App\Http\Controllers\Public\PostController;
 use App\Http\Controllers\Public\SitemapController;
 use App\Models\User;
 use App\Services\ActivityLoggerService;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 // SEO Routes
@@ -68,10 +69,23 @@ Route::middleware('guest')->group(function () {
     })->name('login');
 
     Route::post('/login', function (\Illuminate\Http\Request $request) {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'g-recaptcha-response' => ['required', function ($attribute, $value, $fail) {
+                $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret' => config('services.recaptcha.secret_key'),
+                    'response' => $value,
+                    'remoteip' => request()->ip(),
+                ]);
+
+                if (! $response->json('success')) {
+                    $fail('Verifikasi reCAPTCHA gagal. Silakan coba lagi.');
+                }
+            }],
         ]);
+
+        $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();

@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="font-sans antialiased bg-slate-100 text-slate-900">
     <div class="min-h-screen flex items-center justify-center p-4">
@@ -61,6 +62,11 @@
                             <span class="text-sm text-slate-600">Ingat saya</span>
                         </label>
                     </div>
+
+                    <div class="g-recaptcha flex justify-center" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                    @error('g-recaptcha-response')
+                        <p class="text-xs text-rose-500">{{ $message }}</p>
+                    @enderror
 
                     <button type="submit"
                             class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-green-500/20">
