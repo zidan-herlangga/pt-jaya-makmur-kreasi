@@ -177,13 +177,7 @@
         </div>
     </div>
 
-    {{-- Activity Log --}}
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <h2 class="font-semibold text-slate-900">Aktivitas Terbaru</h2>
-            </div>
+</div>
         </div>
         <div class="divide-y divide-slate-100">
             @forelse($recentActivities as $log)
