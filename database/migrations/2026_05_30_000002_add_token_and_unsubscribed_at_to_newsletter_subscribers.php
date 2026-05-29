@@ -2,7 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -12,6 +14,15 @@ return new class extends Migration
             $table->string('token', 64)->unique()->nullable()->after('email');
             $table->timestamp('unsubscribed_at')->nullable()->after('subscribed_at');
         });
+
+        DB::table('newsletter_subscribers')
+            ->whereNull('token')
+            ->get()
+            ->each(function ($subscriber) {
+                DB::table('newsletter_subscribers')
+                    ->where('id', $subscriber->id)
+                    ->update(['token' => Str::random(64)]);
+            });
     }
 
     public function down(): void

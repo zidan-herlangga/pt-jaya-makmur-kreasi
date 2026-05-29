@@ -6,8 +6,8 @@
             <a href="{{ url('/') }}" class="flex items-center gap-2.5 group shrink-0">
                 @php($logo = setting('logo'))
                 @if ($logo)
-                    <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}"
-                        class="h-10 lg:h-12 w-auto object-contain">
+                    <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}" width="48"
+                        height="48" class="h-10 lg:h-12 w-auto object-contain">
                     <div class="flex flex-col leading-tight">
                         <span
                             class="text-white font-bold text-base lg:text-lg tracking-tight">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
@@ -69,7 +69,7 @@
             </div>
 
             {{-- Mobile Menu Button --}}
-            <button @click="offcanvas = true"
+            <button @click="offcanvas = true" name="menu" aria-label="Menu"
                 class="lg:hidden p-2.5 text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -82,7 +82,7 @@
     {{-- Offcanvas Overlay --}}
     <div x-show="offcanvas" x-transition:enter="transition-opacity ease-linear duration-300"
         x-transition:leave="transition-opacity ease-linear duration-300"
-        class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden"
+        class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden" name="overlay" aria-hidden="true"
         @click="offcanvas = false"></div>
 
     {{-- Offcanvas Panel --}}
@@ -97,7 +97,7 @@
                     @php($logo = setting('logo'))
                     @if ($logo)
                         <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}"
-                            class="h-8 w-auto object-contain">
+                            width="32" height="32" class="h-8 w-auto object-contain">
                         <div class="flex flex-col leading-tight">
                             <span
                                 class="text-white font-bold text-sm tracking-tight">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
