@@ -18,8 +18,8 @@ class CatalogController extends Controller
         $query = AdvertisingPoint::published()->with('category');
 
         // Advanced Filter
-        if ($request->filled('city')) {
-            $query->where('city', $request->city);
+        if ($request->filled('area')) {
+            $query->where('area', $request->area);
         }
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
@@ -38,8 +38,7 @@ class CatalogController extends Controller
         }
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', "%{$request->search}%")
-                    ->orWhere('location_name', 'like', "%{$request->search}%");
+                $q->where('title', 'like', "%{$request->search}%");
             });
         }
 
@@ -52,16 +51,19 @@ class CatalogController extends Controller
         };
 
         $points = $query->paginate(12)->withQueryString();
-        $cities = AdvertisingPoint::distinct()->pluck('city')->sort()->values();
+        $areas = [
+            'jabodetabek' => 'Jabodetabek',
+            'luar_jabodetabek' => 'Luar Jabodetabek',
+        ];
         $categories = Category::byType('product')->active()->get();
 
         $seo = $this->seoService->forPage(
             'Katalog Billboard & Reklame - PT. Jaya Makmur',
-            'Jelajahi katalog billboard dan titik reklame terbaik dari PT. Jaya Makmur. Filter berdasarkan lokasi, harga, dan spesifikasi.',
+            'Jelajahi katalog billboard dan titik reklame terbaik dari PT. Jaya Makmur. Filter berdasarkan area, harga, dan spesifikasi.',
             'katalog reklame, billboard dijual, sewa billboard, PT Jaya Makmur'
         )->render();
 
-        return view('public.catalog', compact('points', 'cities', 'categories', 'seo'));
+        return view('public.catalog', compact('points', 'areas', 'categories', 'seo'));
     }
 
     public function show(AdvertisingPoint $point): View
@@ -73,7 +75,7 @@ class CatalogController extends Controller
         $point->load('category');
         $relatedPoints = AdvertisingPoint::published()
         ->where('id', '!=', $point->id)
-        ->where('city', $point->city)
+        ->where('area', $point->area)
         ->limit(4)
         ->get();
         

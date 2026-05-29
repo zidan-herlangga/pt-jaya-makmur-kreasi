@@ -1,9 +1,5 @@
 <x-mail::message>
-# Pertanyaan Baru dari {{ $inquiry->sender_name }}
-
-{{ $inquiry->sender_name }} mengirimkan pertanyaan melalui form kontak website.
-
-<x-mail::panel>
+# Pertanyaan Baru dari {{ $inquiry->sender_name }} {{ $inquiry->sender_name }} mengirimkan pertanyaan melalui form kontak website. <x-mail::panel>
 **Nama:** {{ $inquiry->sender_name }}
 **Email:** {{ $inquiry->sender_email }}
 @if($inquiry->sender_phone)
@@ -15,16 +11,8 @@
 @if($inquiry->product)
 **Produk:** {{ $inquiry->product->title }}
 @endif
-</x-mail::panel>
-
-**Pesan:**
-
-> {{ $inquiry->message }}
-
-<x-mail::button :url="route('admin.inquiries.index')" color="success">
+</x-mail::panel> **Pesan:** > {{ $inquiry->message }} <x-mail::button :url="route('admin.inquiries.index')" color="success">
 Lihat di Dashboard
-</x-mail::button>
-
-Terima kasih,<br>
+</x-mail::button> Terima kasih,<br>
 {{ config('app.name') }}
 </x-mail::message>

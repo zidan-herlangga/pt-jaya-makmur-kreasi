@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class NewsletterController extends Controller
 {
@@ -31,5 +32,16 @@ class NewsletterController extends Controller
         return response()->json([
             'message' => 'Terima kasih! Anda telah berlangganan newsletter kami.',
         ]);
+    }
+
+    public function unsubscribe(string $token): View
+    {
+        $subscriber = NewsletterSubscriber::where('token', $token)->firstOrFail();
+
+        if ($subscriber->isActive()) {
+            $subscriber->unsubscribe();
+        }
+
+        return view('public.newsletter-unsubscribed');
     }
 }

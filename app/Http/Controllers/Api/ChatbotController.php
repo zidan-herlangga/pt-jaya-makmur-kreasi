@@ -136,7 +136,6 @@ class ChatbotController extends Controller
     private function servicesResponse(): array
     {
         $points = AdvertisingPoint::available()->count();
-        $cities = AdvertisingPoint::available()->whereNotNull('city')->distinct()->pluck('city');
 
         $response = 'Kami menyediakan berbagai layanan reklame unggulan:<br><br>'
             . '🏢 <b>Billboard & Megatron</b> — Papan reklame ukuran besar di lokasi strategis<br>'
@@ -144,13 +143,8 @@ class ChatbotController extends Controller
             . '🖨️ <b>Cetak Digital</b> — Print berkualitas tinggi untuk indoor & outdoor<br>'
             . '💡 <b>Neon Box & Signage</b> — Branding yang terang dan menarik<br>'
             . '📱 <b>Advertising Kreatif</b> — Solusi periklanan inovatif<br><br>'
-            . 'Saat ini tersedia <b>' . $points . ' titik reklame</b>';
-
-        if ($cities->isNotEmpty()) {
-            $response .= ' di ' . $cities->take(4)->join(', ', ' dan ');
-        }
-
-        $response .= '.<br><br>Kunjungi halaman <a href="/katalog" class="text-green-600 underline font-medium">Katalog</a> untuk detail selengkapnya!';
+            . 'Saat ini tersedia <b>' . $points . ' titik reklame</b> di area Jabodetabek dan luar Jabodetabek.<br><br>'
+            . 'Kunjungi halaman <a href="/katalog" class="text-green-600 underline font-medium">Katalog</a> untuk detail selengkapnya!';
 
         return ['response' => $response, 'key' => 'services'];
     }
@@ -250,27 +244,22 @@ class ChatbotController extends Controller
     {
         $points = AdvertisingPoint::available()
             ->with('category')
-            ->orderBy('city')
+            ->orderBy('area')
             ->take(10)
             ->get();
 
         $total = AdvertisingPoint::available()->count();
-        $cities = AdvertisingPoint::available()->whereNotNull('city')->distinct()->pluck('city');
 
-        $response = 'Berikut titik reklame yang tersedia ';
-
-        if ($cities->isNotEmpty()) {
-            $response .= 'di ' . $cities->take(4)->join(', ', ' dan ');
-        }
-        $response .= ':<br><br>';
+        $response = 'Berikut titik reklame yang tersedia:<br><br>';
 
         if ($points->isNotEmpty()) {
-            $grouped = $points->groupBy('city');
-            foreach ($grouped as $city => $cityPoints) {
-                if ($city) {
-                    $response .= '📍 <b>' . e($city) . '</b><br>';
+            $grouped = $points->groupBy('area');
+            foreach ($grouped as $area => $areaPoints) {
+                if ($area) {
+                    $areaLabel = $area === 'jabodetabek' ? 'Jabodetabek' : 'Luar Jabodetabek';
+                    $response .= '📍 <b>' . $areaLabel . '</b><br>';
                 }
-                foreach ($cityPoints as $point) {
+                foreach ($areaPoints as $point) {
                     $response .= '&nbsp;&nbsp;• ' . e($point->title)
                         . ($point->size_dimension ? ' (' . e($point->size_dimension) . ')' : '')
                         . ($point->price ? ' — Rp ' . number_format($point->price, 0, ',', '.') : '')

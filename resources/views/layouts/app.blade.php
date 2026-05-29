@@ -6,24 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#16a34a" id="theme-color">
-    <meta name="color-scheme" content="light dark">
 
-    {{-- Dark Mode Init --}}
-    <script>
-        (function() {
-            const isDark = localStorage.getItem('darkMode') === 'true';
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-                document.getElementById('theme-color')?.setAttribute('content', '#020617');
-            }
-        })();
-    </script>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="{{ setting('site_name', 'PT. Jaya Makmur') }}">
     <meta name="application-name" content="{{ setting('site_name', 'PT. Jaya Makmur') }}">
 
     {{-- Dynamic SEO Meta Tags --}}
-    <title>{{ $seo['meta_title'] ?? config('app.name') }} - Advertising</title>
+    <title>{{ $seo['meta_title'] ?? config('app.name') }}</title>
     <meta name="description" content="{{ $seo['description'] ?? '' }}">
     <meta name="keywords" content="{{ $seo['keywords'] ?? '' }}">
     <meta name="robots" content="{{ setting('meta_robots', 'index, follow') }}">
@@ -54,15 +43,27 @@
     <meta property="og:image" content="{{ $seo['og_image'] ?? asset('images/og-default.jpg') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $seo['og_title'] ?? ($seo['meta_title'] ?? config('app.name')) }}">
     <meta property="og:locale" content="id_ID">
     <meta property="og:site_name" content="{{ $seo['site_name'] ?? config('app.name') }}">
+
+    {{-- Article / Content Timestamps --}}
+    @if (!empty($seo['published_time']))
+        <meta property="article:published_time"
+            content="{{ $seo['published_time'] instanceof \Carbon\Carbon ? $seo['published_time']->toIso8601String() : $seo['published_time'] }}">
+    @endif
+    @if (!empty($seo['updated_time']))
+        <meta property="article:modified_time"
+            content="{{ $seo['updated_time'] instanceof \Carbon\Carbon ? $seo['updated_time']->toIso8601String() : $seo['updated_time'] }}">
+    @endif
 
     {{-- Twitter --}}
     <meta name="twitter:card" content="{{ $seo['twitter_card'] ?? 'summary_large_image' }}">
     <meta name="twitter:url" content="{{ $seo['canonical'] ?? url()->current() }}">
-    <meta name="twitter:title" content="{{ $seo['site_name'] ?? config('app.name') }}">
+    <meta name="twitter:title" content="{{ $seo['og_title'] ?? ($seo['meta_title'] ?? config('app.name')) }}">
     <meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
     <meta name="twitter:image" content="{{ $seo['og_image'] ?? asset('images/og-default.jpg') }}">
+    <meta name="twitter:image:alt" content="{{ $seo['og_title'] ?? ($seo['meta_title'] ?? config('app.name')) }}">
     <meta name="twitter:site" content="{{ setting('site_name', config('app.name')) }}">
 
     {{-- JSON-LD Structured Data --}}
@@ -153,24 +154,11 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100"
+<body class="font-sans antialiased bg-slate-50 text-slate-900"
     x-data="{
         mobileMenu: false,
         scrollY: 0,
-        darkMode: localStorage.getItem('darkMode') === 'true',
-    
-        toggleDark() {
-            this.darkMode = !this.darkMode;
-            localStorage.setItem('darkMode', this.darkMode);
-            if (this.darkMode) {
-                document.documentElement.classList.add('dark');
-                document.getElementById('theme-color')?.setAttribute('content', '#020617');
-            } else {
-                document.documentElement.classList.remove('dark');
-                document.getElementById('theme-color')?.setAttribute('content', '#16a34a');
-            }
-        },
-    
+
         init() {
             window.addEventListener('scroll', () => { this.scrollY = window.scrollY }, { passive: true });
             $el.querySelectorAll('[data-aos]').forEach(el => {
@@ -187,7 +175,7 @@
             });
         },
         get scrolled() { return this.scrollY > 50 }
-    }" :class="{ 'bg-white shadow-md dark:bg-slate-900': scrolled }">
+    }" :class="{ 'bg-white shadow-md': scrolled }">
 
     {{-- Google Tag Manager (noscript) --}}
     @if (setting('google_tag_manager'))
@@ -212,7 +200,7 @@
     {{-- Scroll to top button --}}
     <button x-data="{ show: false }" x-init="window.addEventListener('scroll', () => show = window.scrollY > 500)" x-show="show"
         @click="window.scrollTo({ top: 0, behavior: 'smooth' })" x-transition
-        class="fixed bottom-6 right-6 z-50 p-3 bg-slate-900 hover:bg-green-500 text-white rounded-xl shadow-xl shadow-slate-900/20 hover:shadow-green-500/20 transition-all duration-300 dark:bg-slate-800 dark:hover:bg-green-600 dark:shadow-slate-900/40"
+        class="fixed bottom-6 right-6 z-50 p-3 bg-slate-900 hover:bg-green-500 text-white rounded-xl shadow-xl shadow-slate-900/20 hover:shadow-green-500/20 transition-all duration-300"
         aria-label="Scroll to top">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 15.75l7.5-7.5 7.5 7.5" />

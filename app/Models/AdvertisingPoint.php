@@ -21,10 +21,7 @@ class AdvertisingPoint extends Model
         'category_id',
         'title',
         'slug',
-        'location_name',
-        'city',
-        'lat',
-        'long',
+        'area',
         'orientation',
         'size_dimension',
         'light_type',
@@ -42,8 +39,6 @@ class AdvertisingPoint extends Model
     ];
 
     protected $casts = [
-        'lat' => 'decimal:8',
-        'long' => 'decimal:8',
         'price' => 'decimal:2',
         'gallery' => 'array',
         'published_at' => 'datetime',
@@ -58,11 +53,12 @@ class AdvertisingPoint extends Model
             }
 
             // Auto-generate SEO fields if empty
+            $areaLabel = $point->area === 'jabodetabek' ? 'Jabodetabek' : ($point->area === 'luar_jabodetabek' ? 'Luar Jabodetabek' : '');
             if (empty($point->meta_title)) {
-                $point->meta_title = $point->title . ' - PT. Jaya Makmur ' . $point->city;
+                $point->meta_title = $point->title . ' - PT. Jaya Makmur' . ($areaLabel ? ' ' . $areaLabel : '');
             }
             if (empty($point->meta_description)) {
-                $point->meta_description = 'Sewa ' . $point->title . ' di ' . $point->location_name
+                $point->meta_description = 'Sewa ' . $point->title
                     . '. ' . $point->size_dimension . '. Harga terbaik untuk iklan billboard dan reklame Anda.';
             }
         });
@@ -114,9 +110,9 @@ class AdvertisingPoint extends Model
         return $query->where('status', 'available');
     }
 
-    public function scopeByCity($query, string $city)
+    public function scopeByArea($query, string $area)
     {
-        return $query->where('city', $city);
+        return $query->where('area', $area);
     }
 
     public function scopeFeatured($query, int $limit = 6)

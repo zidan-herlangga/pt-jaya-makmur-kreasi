@@ -17,7 +17,7 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased bg-slate-50 text-slate-900" x-data="{ sidebarOpen: false, darkMode: localStorage.getItem('darkMode') === 'true' }" :class="darkMode && 'dark'">
+<body class="font-sans antialiased bg-slate-50 text-slate-900" x-data="{ sidebarOpen: false }">
 
     {{-- Mobile Sidebar Overlay --}}
     <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
@@ -92,14 +92,12 @@
                     menubar: false,
                     branding: false,
                     promotion: false,
-                    statusbar: false, // Hapus bar bawah yang mengganggu
+                    statusbar: false,
                     plugins: 'quickbars lists link image code wordcount',
                     toolbar: 'undo redo | blocks | bold italic | bullist numlist | link image | fullscreen',
-                    // Fitur Quickbars membuat toolbar muncul saat teks diblok (ala Medium)
                     quickbars_selection_toolbar: 'bold italic | h2 h3 | blockquote quicklink',
                     quickbars_insert_toolbar: 'quickimage bullist numlist',
                     toolbar_location: 'top',
-                    // Skin & Content Style
                     content_style: `
                         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
                         body { 

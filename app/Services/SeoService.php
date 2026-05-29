@@ -12,27 +12,41 @@ class SeoService
 
     public function __construct()
     {
+        $siteName = config('app.name');
         $this->defaults = [
-            'title' => config('app.name'),
+            'title' => $siteName,
+            'meta_title' => $siteName,
             'description' => 'PT. Jaya Makmur - Jasa reklame profesional untuk branding dan promosi bisnis Anda. Billboard, neon box, dan media luar ruang terbaik.',
             'keywords' => 'reklame, billboard, iklan, neon box, media luar ruang, advertising',
             'og_type' => 'website',
+            'og_title' => $siteName,
+            'og_description' => 'PT. Jaya Makmur - Jasa reklame profesional untuk branding dan promosi bisnis Anda. Billboard, neon box, dan media luar ruang terbaik.',
             'og_image' => asset('images/og-default.jpg'),
+            'site_name' => $siteName,
             'twitter_card' => 'summary_large_image',
         ];
     }
 
     public function forModel($model): self
     {
+        $siteName = config('app.name');
+        $ogType = $model instanceof AdvertisingPoint ? 'product' : 'article';
+
         $this->defaults = [
             'title' => $model->getSeoTitle(),
+            'meta_title' => $model->getSeoTitle(),
             'description' => $model->getSeoDescription(),
             'keywords' => $model->getSeoKeywords(),
-            'og_type' => $model instanceof AdvertisingPoint ? 'product' : 'article',
+            'og_type' => $ogType,
+            'og_title' => $model->getSeoTitle(),
+            'og_description' => $model->getSeoDescription(),
             'og_image' => $model->getOgImage(),
+            'site_name' => $siteName,
             'canonical' => $model->getCanonicalUrl(),
             'json_ld' => $model->getJsonLdScript(),
             'twitter_card' => 'summary_large_image',
+            'published_time' => $model->published_at ?? $model->created_at ?? null,
+            'updated_time' => $model->updated_at ?? null,
         ];
 
         return $this;
@@ -40,12 +54,19 @@ class SeoService
 
     public function forPage(string $title, string $description = '', string $keywords = '', ?string $ogImage = null): self
     {
+        $siteName = config('app.name');
+        $fullTitle = $title . ' | ' . $siteName;
+
         $this->defaults = [
-            'title' => $title . ' | ' . config('app.name'),
+            'title' => $fullTitle,
+            'meta_title' => $fullTitle,
             'description' => $description,
             'keywords' => $keywords,
             'og_type' => 'website',
+            'og_title' => $fullTitle,
+            'og_description' => $description,
             'og_image' => $ogImage ?? asset('images/og-default.jpg'),
+            'site_name' => $siteName,
             'canonical' => url()->current(),
             'twitter_card' => 'summary_large_image',
         ];
@@ -157,12 +178,13 @@ class SeoService
             'description' => setting('site_description', 'Solusi Reklame Profesional & Billboard Terbaik'),
             'address' => [
                 '@type' => 'PostalAddress',
-                'streetAddress' => setting('address', 'Jl. Sudirman No. 123'),
-                'addressLocality' => 'Jakarta Pusat',
+                'streetAddress' => setting('address', 'Cluster Mangunjaya Town House Blok B 27, RT 002 RW 003 Tambun Selatan, Kab. Bekasi, Jawa Barat (17510)'),
+                'addressLocality' => 'Jakarta',
+                'addressRegion' => 'DKI Jakarta',
                 'addressCountry' => 'ID',
             ],
             'telephone' => setting('phone', '+62 812-3456-7890'),
-            'email' => setting('email', 'info@jayamakmur.com'),
+            'email' => setting('email', 'pt.jayamakmurkreasi@gmail.com'),
             'url' => config('app.url'),
             'priceRange' => 'IDR 5.000.000 - IDR 100.000.000',
             'openingHours' => 'Mo-Fr 08:00-17:00',

@@ -28,14 +28,12 @@ class AdvertisingPointController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', "%{$request->search}%")
-                    ->orWhere('location_name', 'like', "%{$request->search}%")
-                    ->orWhere('city', 'like', "%{$request->search}%");
+                $q->where('title', 'like', "%{$request->search}%");
             });
         }
 
-        if ($request->filled('city')) {
-            $query->where('city', $request->city);
+        if ($request->filled('area')) {
+            $query->where('area', $request->area);
         }
 
         if ($request->filled('status')) {
@@ -47,7 +45,10 @@ class AdvertisingPointController extends Controller
         }
 
         $points = $query->paginate(15)->withQueryString();
-        $cities = AdvertisingPoint::distinct()->pluck('city')->sort()->values();
+        $areas = [
+            'jabodetabek' => 'Jabodetabek',
+            'luar_jabodetabek' => 'Luar Jabodetabek',
+        ];
         $categories = Category::byType('product')->active()->get();
         $stats = [
             'total' => AdvertisingPoint::count(),
@@ -55,7 +56,7 @@ class AdvertisingPointController extends Controller
             'booked' => AdvertisingPoint::where('status', 'booked')->count(),
         ];
 
-        return view('admin.advertising-points.index', compact('points', 'cities', 'categories', 'stats'));
+        return view('admin.advertising-points.index', compact('points', 'areas', 'categories', 'stats'));
     }
 
     public function create(): View

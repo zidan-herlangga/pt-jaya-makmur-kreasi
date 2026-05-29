@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Mail\NewPostNotification;
+use App\Models\NewsletterSubscriber;
 use App\Services\SeoService;
 use App\Traits\HasSeo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -67,6 +70,18 @@ class Post extends Model
                 SeoService::generateArticleSchema($post),
                 JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             );
+        });
+
+        static::saved(function (self $post) {
+            if ($post->wasChanged('status') && $post->status === 'published' && !app()->runningInConsole()) {
+                $subscribers = NewsletterSubscriber::active()->get();
+
+                foreach ($subscribers as $subscriber) {
+                    Mail::to($subscriber->email)->queue(
+                        new NewPostNotification($post, $subscriber)
+                    );
+                }
+            }
         });
     }
 

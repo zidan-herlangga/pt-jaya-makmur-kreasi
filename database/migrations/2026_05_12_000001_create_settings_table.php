@@ -25,7 +25,7 @@ return new class extends Migration
             ['general', 'site_description', 'Solusi Reklame Profesional & Billboard Terbaik', 'text', 'Deskripsi Situs', 'Deskripsi singkat website'],
             ['general', 'site_url', url('/'), 'text', 'URL Situs', 'URL utama website'],
             ['general', 'site_language', 'id', 'text', 'Bahasa', 'Kode bahasa situs'],
-            ['general', 'admin_email', 'admin@jayamakmur.com', 'text', 'Email Admin', 'Email untuk notifikasi admin'],
+            ['general', 'admin_email', 'pt.jayamakmurkreasi@gmail.com', 'text', 'Email Admin', 'Email untuk notifikasi admin'],
 
             ['seo', 'meta_title', 'PT. Jaya Makmur - Solusi Reklame Profesional', 'text', 'Meta Title Default', 'Judul default untuk SEO'],
             ['seo', 'meta_description', 'PT. Jaya Makmur - Jasa reklame profesional untuk branding bisnis Anda.', 'text', 'Meta Description Default', 'Deskripsi default untuk SEO'],
@@ -40,7 +40,7 @@ return new class extends Migration
 
             ['contact', 'address', 'Jl. Sudirman No. 123, Jakarta Pusat', 'text', 'Alamat', 'Alamat perusahaan'],
             ['contact', 'phone', '+62 812-3456-7890', 'text', 'Telepon', 'Nomor telepon perusahaan'],
-            ['contact', 'email', 'info@jayamakmur.com', 'text', 'Email', 'Email kontak perusahaan'],
+            ['contact', 'email', 'pt.jayamakmurkreasi@gmail.com', 'text', 'Email', 'Email kontak perusahaan'],
             ['contact', 'map_iframe', '', 'text', 'Iframe Peta', 'Kode iframe untuk menampilkan peta lokasi perusahaan'],
 
             ['appearance', 'favicon', '', 'image', 'Favicon', 'Icon tab browser (32x32 px)'],
