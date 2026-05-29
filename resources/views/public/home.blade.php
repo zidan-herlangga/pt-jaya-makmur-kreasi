@@ -34,7 +34,8 @@
             <div class="absolute inset-0"> <template x-for="(banner, i) in banners" :key="i">
                     <div x-show="current === i" x-transition:enter="transition-all duration-700"
                         x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
-                        class="absolute inset-0 bg-cover bg-center" :style="'background-image: url(' + banner + ')'"> </div>
+                        class="absolute inset-0"> <img :src="banner" :alt="'Slide ' + (i + 1)"
+                            class="w-full h-full object-cover" loading="lazy"> </div>
                 </template>
                 <div class="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-900/50 to-slate-900/70"></div>
             </div>
