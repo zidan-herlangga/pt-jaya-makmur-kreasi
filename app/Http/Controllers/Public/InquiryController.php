@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreInquiryRequest;
 use App\Mail\InquiryNotification;
-use App\Models\AdvertisingPoint;
 use App\Models\Inquiry;
 use App\Services\SeoService;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +15,7 @@ class InquiryController extends Controller
 {
     public function __construct(private SeoService $seoService) {}
 
-    public function create(?AdvertisingPoint $product = null): View
+    public function create(): View
     {
         $seo = $this->seoService->forPage(
             'Hubungi Kami - PT. Jaya Makmur',
@@ -24,7 +23,7 @@ class InquiryController extends Controller
             'kontak reklame, hubungi kami, konsultasi billboard, PT Jaya Makmur'
         )->render();
 
-        return view('public.inquiry', compact('product', 'seo'));
+        return view('public.inquiry', compact('seo'));
     }
 
     public function store(StoreInquiryRequest $request): RedirectResponse

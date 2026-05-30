@@ -81,7 +81,7 @@ class CatalogController extends Controller
         
         $seo = $this->seoService->forModel($point)->render();
         
-        $whatsappLink = "https://wa.me/6281234567890?text=Halo%20PT. Jaya Kreasi Makmu%20Makmur%2C%20saya%20tertarik%20dengan%20iklan%20berjudul%20$point->title";
+        $whatsappLink = "https://wa.me/6281234567890?text=Halo%20PT.%20Jaya%20Makmur%20Kreasi%2C%20saya%20tertarik%20dengan%20iklan%20berjudul%20$point->title";
 
         return view('public.catalog-show', compact('point', 'relatedPoints', 'seo', 'whatsappLink'));
     }

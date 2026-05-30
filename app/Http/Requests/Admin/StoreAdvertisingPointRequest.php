@@ -15,18 +15,12 @@ class StoreAdvertisingPointRequest extends FormRequest
 
     public function rules(): array
     {
-        // Mengambil parameter route secara dinamis
-        $point = $this->route('advertising_point');
-        
-        // Ambil ID jika parameter berupa objek (Route Model Binding), jika tidak gunakan langsung
-        $pointId = ($point instanceof \App\Models\AdvertisingPoint) ? $point->id : $point;
-
         return [
             'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:200'],
             'slug' => [
                 'required',
-                \Illuminate\Validation\Rule::unique('advertising_points')->ignore($this->route('advertisingPoint')),
+                Rule::unique('advertising_points')->ignore($this->route('advertisingPoint')),
             ],
             'area' => ['required', 'string', 'in:jabodetabek,luar_jabodetabek'],
             'orientation' => ['nullable', 'string', 'in:horizontal,vertical,rooftop'],
