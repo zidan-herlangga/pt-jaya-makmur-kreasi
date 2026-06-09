@@ -139,6 +139,42 @@ class AdvertisingPointController extends Controller
         // Hapus field file dari $data agar tidak ter-overwrite jika file tidak diupload
         unset($data['thumbnail'], $data['gallery'], $data['og_image']);
 
+        // Handle delete thumbnail
+        if ($request->boolean('delete_thumbnail') && $advertisingPoint->thumbnail) {
+            $this->imageService->delete('advertising-points', $advertisingPoint->slug);
+            $data['thumbnail'] = null;
+            if ($advertisingPoint->og_image) {
+                $ogPath = pathinfo($advertisingPoint->og_image, PATHINFO_DIRNAME);
+                $ogFilename = pathinfo($advertisingPoint->og_image, PATHINFO_FILENAME);
+                $this->imageService->delete($ogPath, $ogFilename);
+            }
+            $data['og_image'] = null;
+        }
+
+        // Handle delete OG image
+        if ($request->boolean('delete_og_image') && $advertisingPoint->og_image) {
+            $ogPath = pathinfo($advertisingPoint->og_image, PATHINFO_DIRNAME);
+            $ogFilename = pathinfo($advertisingPoint->og_image, PATHINFO_FILENAME);
+            $this->imageService->delete($ogPath, $ogFilename);
+            $data['og_image'] = null;
+        }
+
+        // Handle delete gallery images
+        if ($request->has('delete_gallery') && !empty($advertisingPoint->gallery)) {
+            $deleteIndices = $request->input('delete_gallery', []);
+            $gallery = $advertisingPoint->gallery;
+            foreach ($deleteIndices as $index) {
+                if (isset($gallery[$index])) {
+                    $this->imageService->delete(
+                        'advertising-points/gallery',
+                        basename($gallery[$index], '.' . pathinfo($gallery[$index], PATHINFO_EXTENSION))
+                    );
+                    unset($gallery[$index]);
+                }
+            }
+            $data['gallery'] = array_values($gallery);
+        }
+
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail')) {
             if ($advertisingPoint->thumbnail) {
