@@ -136,6 +136,9 @@ class AdvertisingPointController extends Controller
 
         $data = $request->validated();
 
+        // Hapus field file dari $data agar tidak ter-overwrite jika file tidak diupload
+        unset($data['thumbnail'], $data['gallery'], $data['og_image']);
+
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail')) {
             if ($advertisingPoint->thumbnail) {

@@ -29,21 +29,24 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10"> {{-- Company Info --}} <div
                 class="lg:col-span-1"> <a href="{{ url('/') }}" class="flex items-center gap-2.5 mb-5 group">
                     @php($logo = setting('logo')) @if ($logo)
-                        <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}" width="56" height="56"
-                            class="h-12 lg:h-14 w-auto object-contain">
+                        <img src="{{ Storage::url($logo) }}" alt="{{ setting('site_name', 'PT. Jaya Makmur') }}"
+                            width="56" height="56" class="h-12 lg:h-14 w-auto object-contain">
                         <div class="flex flex-col leading-tight"> <span
                                 class="text-white font-bold text-lg">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
                             <span class="text-green-400 text-[10px] font-medium tracking-wider uppercase">Solusi Reklame
-                                Terpercaya</span> </div>
+                                Terpercaya</span>
+                        </div>
                     @else
                         <div
                             class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:shadow-green-500/40 transition-all">
-                            <span class="text-white font-bold text-sm">JM</span> </div>
+                            <span class="text-white font-bold text-sm">JM</span>
+                        </div>
                         <div class="flex flex-col leading-tight"> <span
                                 class="text-white font-bold text-lg">{{ setting('site_name', 'PT. Jaya Makmur') }}</span>
                             <span class="text-green-400 text-[10px] font-medium tracking-wider uppercase">Solusi Reklame
-                                Terpercaya</span> </div>
-                        @endif </a>
+                                Terpercaya</span>
+                        </div>
+                    @endif </a>
                 <p class="text-sm leading-relaxed text-slate-400">
                     {{ setting('site_description', 'Perusahaan penyedia jasa reklame dan billboard profesional. Melayani pemasangan media promosi luar ruang di berbagai kota besar Indonesia dengan kualitas terbaik.') }}
                 </p> {{-- Social Media --}} <div class="flex items-center gap-3 mt-6"> <a
@@ -125,15 +128,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg> <span
-                            class="text-sm text-slate-400">{{ str_replace(['@', '.'], ['&#64;', '&#46;'], setting('email', 'info@jayamakmur.com')) }}</span> </li>
+                            class="text-sm text-slate-400">{{ setting('email', 'info@jayamakmur.com') }}</span> </li>
                 </ul>
             </div>
         </div> {{-- Bottom Bar --}} <div
             class="border-t border-slate-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-sm text-slate-400">&copy; {{ date('Y') }}
                 {{ setting('site_name', 'PT. Jaya Makmur') }}. All rights reserved.</p>
-            <div class="flex items-center gap-6 text-sm 
-text-slate-400"> <a href="{{ route('privacy') }}"
+            <div class="flex items-center gap-6 text-sm text-slate-400"> <a href="{{ route('privacy') }}"
                     class="hover:text-green-400 transition-colors">Kebijakan Privasi</a>
                 <a href="{{ route('terms') }}" class="hover:text-green-400 transition-colors">Syarat & Ketentuan</a>
             </div>

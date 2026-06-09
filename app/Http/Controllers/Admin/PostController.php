@@ -76,6 +76,12 @@ class PostController extends Controller
 
         $data['author_id'] = auth()->id();
 
+        if ($data['status'] === 'published' && empty($data['published_at'])) {
+            $data['published_at'] = now();
+        } elseif ($data['status'] !== 'published') {
+            $data['published_at'] = null;
+        }
+
         if ($request->hasFile('featured_image')) {
             $images = $this->imageService->process(
                 $request->file('featured_image'),
@@ -124,6 +130,12 @@ class PostController extends Controller
             'meta_keywords' => ['nullable', 'string', 'max:500'],
             'published_at' => ['nullable', 'date'],
         ]);
+
+        if ($data['status'] === 'published' && empty($data['published_at'])) {
+            $data['published_at'] = $post->published_at ?? now();
+        } elseif ($data['status'] !== 'published') {
+            $data['published_at'] = null;
+        }
 
         if ($request->hasFile('featured_image')) {
             if ($post->featured_image) {
